@@ -3,19 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SMART 目標檢核|目標設定與績效面談 課後工具</title>
-<meta name="description" content="將你或部屬草擬的績效目標貼上,依 SMART 原則逐項檢核並取得具體改善建議。">
+<title>SMART 目標檢核|友達光電 目標設定與績效面談 課後工具</title>
+<meta name="description" content="友達光電主管訓練課後工具:將你或部屬草擬的績效目標貼上,依 SMART 原則逐項檢核並取得具體改善建議。">
 <style>
 :root{
-  --paper:#F5F7F4;
+  --brand:#00A650;          /* AUO 企業綠 */
+  --paper:#F4F7F4;
   --card:#FFFFFF;
-  --ink:#1C2A24;
-  --ink-2:#55655C;
-  --ink-3:#7C8A82;
-  --line:#DCE3DD;
-  --accent:#0E6B4F;
-  --accent-ink:#0A5540;
-  --accent-soft:#E3EFE9;
+  --ink:#1B2A21;
+  --ink-2:#53655A;
+  --ink-3:#7A8A80;
+  --line:#DBE3DC;
+  --accent:#008A45;
+  --accent-ink:#00713A;
+  --accent-soft:#E2F3E8;
   --good:#177245;
   --good-soft:#E1F0E6;
   --warn:#9A6A12;
@@ -27,23 +28,26 @@
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --paper:#101714; --card:#18211C; --ink:#E7ECE8; --ink-2:#A3B0A8; --ink-3:#7D8B83;
-    --line:#2A3630; --accent:#4FC39A; --accent-ink:#7BD6B4; --accent-soft:#1C2F27;
+    --brand:#00B95C;
+    --paper:#0F1712; --card:#17211A; --ink:#E7ECE8; --ink-2:#A3B0A8; --ink-3:#7D8B83;
+    --line:#293630; --accent:#43CE85; --accent-ink:#74DCA4; --accent-soft:#1B2F22;
     --good:#5FBE8C; --good-soft:#1B2F24; --warn:#D9A441; --warn-soft:#332A17;
     --poor:#E08078; --poor-soft:#35201E; --track:#242E28;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
   }
 }
 :root[data-theme="light"]{
-  --paper:#F5F7F4; --card:#FFFFFF; --ink:#1C2A24; --ink-2:#55655C; --ink-3:#7C8A82;
-  --line:#DCE3DD; --accent:#0E6B4F; --accent-ink:#0A5540; --accent-soft:#E3EFE9;
+  --brand:#00A650;
+  --paper:#F4F7F4; --card:#FFFFFF; --ink:#1B2A21; --ink-2:#53655A; --ink-3:#7A8A80;
+  --line:#DBE3DC; --accent:#008A45; --accent-ink:#00713A; --accent-soft:#E2F3E8;
   --good:#177245; --good-soft:#E1F0E6; --warn:#9A6A12; --warn-soft:#F6ECD6;
   --poor:#A93F36; --poor-soft:#F6E3E0; --track:#E8EDE8;
   --shadow:0 1px 2px rgba(28,42,36,.06),0 8px 24px rgba(28,42,36,.07);
 }
 :root[data-theme="dark"]{
-  --paper:#101714; --card:#18211C; --ink:#E7ECE8; --ink-2:#A3B0A8; --ink-3:#7D8B83;
-  --line:#2A3630; --accent:#4FC39A; --accent-ink:#7BD6B4; --accent-soft:#1C2F27;
+  --brand:#00B95C;
+  --paper:#0F1712; --card:#17211A; --ink:#E7ECE8; --ink-2:#A3B0A8; --ink-3:#7D8B83;
+  --line:#293630; --accent:#43CE85; --accent-ink:#74DCA4; --accent-soft:#1B2F22;
   --good:#5FBE8C; --good-soft:#1B2F24; --warn:#D9A441; --warn-soft:#332A17;
   --poor:#E08078; --poor-soft:#35201E; --track:#242E28;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
@@ -61,8 +65,27 @@ h1,h2,h3{font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif; l
 button{font:inherit; cursor:pointer}
 :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
 
+/* ---------- brand bar ---------- */
+.brandbar{
+  display:flex; align-items:center; gap:12px;
+  padding:18px 20px 0;
+}
+.brand-mark{
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--brand); color:#fff;
+  font-weight:800; font-size:.95rem; letter-spacing:.06em;
+  padding:6px 10px; border-radius:6px; line-height:1;
+}
+.brand-name{font-weight:700; letter-spacing:.02em}
+.brand-name small{display:block; font-weight:400; font-size:.7rem; letter-spacing:.14em; color:var(--ink-3); text-transform:uppercase}
+.brandbar .course-tag{
+  margin-left:auto; color:var(--ink-3); font-size:.8rem; letter-spacing:.08em;
+  white-space:nowrap;
+}
+@media (max-width:560px){ .brandbar .course-tag{display:none} }
+
 /* ---------- header ---------- */
-.site-head{padding:56px 0 8px}
+.site-head{padding:40px 0 8px}
 .eyebrow{
   font-size:.8rem; letter-spacing:.18em; color:var(--accent-ink);
   text-transform:uppercase; margin:0 0 14px; font-weight:600;
@@ -215,6 +238,12 @@ textarea:focus{outline:2px solid var(--accent); outline-offset:0; border-color:t
 </head>
 <body>
 
+<div class="brandbar wrap">
+  <span class="brand-mark" aria-hidden="true">AUO</span>
+  <span class="brand-name">友達光電<small>AUO Corporation</small></span>
+  <span class="course-tag">主管訓練 · DDI 課程</span>
+</div>
+
 <header class="site-head wrap">
   <p class="eyebrow">目標設定與績效面談 · 課後練習工具</p>
   <h1>SMART 目標檢核</h1>
@@ -271,7 +300,7 @@ textarea:focus{outline:2px solid var(--accent); outline-offset:0; border-color:t
 
 <footer class="site-foot">
   <div class="wrap">
-    <p>本工具為「目標設定與績效面談」課程之課後練習輔助,檢核採關鍵字規則判斷,結果僅供草稿參考。</p>
+    <p>本工具為友達光電主管訓練「目標設定與績效面談」課程之課後練習輔助,檢核採關鍵字規則判斷,結果僅供草稿參考。</p>
     <p>目標的可達成性與相關性,仍需主管與部屬在面談中對話確認 — 工具不能取代對話。</p>
   </div>
 </footer>
