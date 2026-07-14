@@ -241,7 +241,7 @@ textarea:focus{outline:2px solid var(--accent); outline-offset:0; border-color:t
 <div class="brandbar wrap">
   <span class="brand-mark" aria-hidden="true">AUO</span>
   <span class="brand-name">友達光電<small>AUO Corporation</small></span>
-  <span class="course-tag">主管訓練 · DDI 課程</span>
+  <span class="course-tag">主管訓練</span>
 </div>
 
 <header class="site-head wrap">
@@ -270,27 +270,27 @@ textarea:focus{outline:2px solid var(--accent); outline-offset:0; border-color:t
     <p>設定目標或與部屬面談時,可用每張卡片下方的問句自我檢核。</p>
     <div class="ref-grid">
       <div class="ref-card">
-        <h3><span class="dim-badge">S</span>具體 Specific</h3>
+        <h3><span class="dim-badge">S</span>明確的 Specific</h3>
         <p>寫清楚要「做什麼、做到什麼程度、範圍在哪」,避免只有方向沒有內容的字眼,例如「提升」「加強」「優化」。</p>
         <p class="ask">問自己:目標達成時,別人會看到什麼具體的改變或產出?</p>
       </div>
       <div class="ref-card">
-        <h3><span class="dim-badge">M</span>可衡量 Measurable</h3>
+        <h3><span class="dim-badge">M</span>可衡量的 Measurable</h3>
         <p>要有數字或可驗收的證據:指標名稱、現況值、目標值;質化目標則明訂交付物與驗收標準。</p>
         <p class="ask">問自己:我們要用哪個數字或證據,判斷目標達成了沒有?</p>
       </div>
       <div class="ref-card">
-        <h3><span class="dim-badge">A</span>可達成 Achievable</h3>
+        <h3><span class="dim-badge">A</span>可達成的 Attainable</h3>
         <p>具挑戰性但做得到:盤點現況、資源、能力與方法,必要時分階段推進。</p>
         <p class="ask">問自己:以現有資源與工作量,達成把握有幾成?需要哪些支援?</p>
       </div>
       <div class="ref-card">
-        <h3><span class="dim-badge">R</span>相關 Relevant</h3>
+        <h3><span class="dim-badge">R</span>具相關性 Relevant</h3>
         <p>目標要接得上部門與公司的重點方向,說得出「為什麼是這個目標、為什麼是現在」。</p>
         <p class="ask">問自己:這個目標支持部門今年的哪一項重點?</p>
       </div>
       <div class="ref-card">
-        <h3><span class="dim-badge">T</span>有時限 Time-bound</h3>
+        <h3><span class="dim-badge">T</span>有時間性 Time Bound</h3>
         <p>訂出完成期限與中間檢核點;例行性工作則明訂頻率與每期水準。</p>
         <p class="ask">問自己:什麼時候完成?中間在哪些時點檢視進度?</p>
       </div>
@@ -496,11 +496,11 @@ function evalT(text){
 
 /* ---------- 整體 ---------- */
 var DIMS = [
-  { key:"S", name:"具體", en:"Specific",   fn:evalS },
-  { key:"M", name:"可衡量", en:"Measurable", fn:evalM },
-  { key:"A", name:"可達成", en:"Achievable", fn:evalA },
-  { key:"R", name:"相關", en:"Relevant",   fn:evalR },
-  { key:"T", name:"有時限", en:"Time-bound", fn:evalT }
+  { key:"S", name:"明確的", en:"Specific",   fn:evalS },
+  { key:"M", name:"可衡量的", en:"Measurable", fn:evalM },
+  { key:"A", name:"可達成的", en:"Attainable", fn:evalA },
+  { key:"R", name:"具相關性", en:"Relevant",   fn:evalR },
+  { key:"T", name:"有時間性", en:"Time Bound", fn:evalT }
 ];
 
 var COACH = {
