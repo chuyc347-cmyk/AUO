@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>技術職缺成功輪廓卡|達發科技 招募工具</title>
+<meta name="description" content="達發科技主管招募工具:輸入職缺名稱或貼上 104 職務內容,產生「技術職缺成功輪廓卡」參考草稿,讓人才畫像更清晰。">
+<style>
+:root{
+  --paper:#F4F7F4;
+  --card:#FFFFFF;
+  --ink:#1B2823;
+  --ink-2:#53645B;
+  --ink-3:#7C8C83;
+  --line:#DAE2DA;
+  --accent:#0E6F6C;          /* 深青 */
+  --accent-ink:#0A5A58;
+  --accent-soft:#E0EFED;
+  --copper:#A6683C;          /* 銅 */
+  --copper-soft:#F3E9DF;
+  --good:#2E7D4F;
+  --good-soft:#E3F0E7;
+  --risk:#AC4438;
+  --risk-soft:#F6E5E1;
+  --chip:#EDF2ED;
+  --shadow:0 1px 2px rgba(27,40,35,.06),0 10px 28px rgba(27,40,35,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#0E1412; --card:#161E1B; --ink:#E4EBE6; --ink-2:#9FB0A6; --ink-3:#75867C;
+    --line:#2A362F; --accent:#4AB3AC; --accent-ink:#7CCFC8; --accent-soft:#15302D;
+    --copper:#D0996A; --copper-soft:#32271C;
+    --good:#63BE8C; --good-soft:#1B2F24; --risk:#DF8375; --risk-soft:#372220;
+    --chip:#202B26;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"]{
+  --paper:#F4F7F4; --card:#FFFFFF; --ink:#1B2823; --ink-2:#53645B; --ink-3:#7C8C83;
+  --line:#DAE2DA; --accent:#0E6F6C; --accent-ink:#0A5A58; --accent-soft:#E0EFED;
+  --copper:#A6683C; --copper-soft:#F3E9DF;
+  --good:#2E7D4F; --good-soft:#E3F0E7; --risk:#AC4438; --risk-soft:#F6E5E1;
+  --chip:#EDF2ED;
+  --shadow:0 1px 2px rgba(27,40,35,.06),0 10px 28px rgba(27,40,35,.08);
+}
+:root[data-theme="dark"]{
+  --paper:#0E1412; --card:#161E1B; --ink:#E4EBE6; --ink-2:#9FB0A6; --ink-3:#75867C;
+  --line:#2A362F; --accent:#4AB3AC; --accent-ink:#7CCFC8; --accent-soft:#15302D;
+  --copper:#D0996A; --copper-soft:#32271C;
+  --good:#63BE8C; --good-soft:#1B2F24; --risk:#DF8375; --risk-soft:#372220;
+  --chip:#202B26;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;
+  font-size:16px; line-height:1.8;
+}
+.wrap{max-width:1060px; margin:0 auto; padding:0 20px 72px}
+
+/* ---------- header ---------- */
+header.site{
+  padding:44px 0 8px;
+}
+.eyebrow{
+  font-size:13px; letter-spacing:.22em; color:var(--accent);
+  font-weight:700; text-transform:uppercase;
+}
+h1{
+  margin:.3em 0 .2em; font-size:clamp(26px,4.4vw,38px); line-height:1.3;
+  letter-spacing:.02em; text-wrap:balance;
+}
+.subtitle{color:var(--ink-2); max-width:44em; margin:0}
+
+/* ---------- concept ---------- */
+details.concept{
+  margin:28px 0 0; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; box-shadow:var(--shadow); overflow:hidden;
+}
+details.concept summary{
+  cursor:pointer; padding:16px 22px; font-weight:700; color:var(--accent-ink);
+  list-style:none; display:flex; align-items:center; gap:10px; user-select:none;
+}
+details.concept summary::-webkit-details-marker{display:none}
+details.concept summary::before{content:"▸"; transition:transform .15s}
+details.concept[open] summary::before{transform:rotate(90deg)}
+.concept-body{padding:0 22px 22px; border-top:1px dashed var(--line)}
+.concept-body p{margin:14px 0 8px}
+.compare{
+  display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;
+}
+.compare .col{
+  border:1px solid var(--line); border-radius:10px; padding:14px 16px; background:var(--paper);
+}
+.compare .col h3{margin:0 0 8px; font-size:14px; letter-spacing:.08em}
+.compare .col.bad h3{color:var(--risk)}
+.compare .col.goodc h3{color:var(--good)}
+.compare ul{margin:0; padding-left:1.2em}
+.compare .col p{margin:0}
+.mission-quote{
+  font-family:"Noto Serif TC","PMingLiU",serif;
+  border-left:3px solid var(--copper); padding:6px 16px; margin:14px 0 0;
+  color:var(--ink); background:var(--copper-soft); border-radius:0 8px 8px 0;
+}
+
+/* ---------- input panel ---------- */
+section.panel{
+  margin-top:28px; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; box-shadow:var(--shadow); padding:26px 26px 22px;
+}
+.panel h2{margin:0 0 4px; font-size:20px}
+.panel .hint{color:var(--ink-2); font-size:14px; margin:0 0 18px}
+label.fld{display:block; font-weight:700; font-size:14px; margin:16px 0 6px; letter-spacing:.04em}
+label.fld .opt{font-weight:400; color:var(--ink-3)}
+input[type=text], textarea{
+  width:100%; border:1.5px solid var(--line); border-radius:10px;
+  background:var(--paper); color:var(--ink); font:inherit;
+  padding:11px 14px; outline:none;
+}
+input[type=text]:focus, textarea:focus{border-color:var(--accent); background:var(--card)}
+textarea{min-height:120px; resize:vertical; line-height:1.7}
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+button.chip{
+  border:1px solid var(--line); background:var(--chip); color:var(--ink-2);
+  border-radius:999px; padding:5px 14px; font:inherit; font-size:14px; cursor:pointer;
+}
+button.chip:hover{border-color:var(--accent); color:var(--accent-ink)}
+.url-note{
+  display:none; margin-top:10px; padding:10px 14px; border-radius:10px;
+  background:var(--copper-soft); color:var(--ink); font-size:14px;
+  border:1px solid var(--copper);
+}
+.url-note.show{display:block}
+.actions{margin-top:22px; display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+button.primary{
+  background:var(--accent); color:#fff; border:none; border-radius:10px;
+  padding:12px 28px; font:inherit; font-weight:700; font-size:16px; cursor:pointer;
+  letter-spacing:.06em;
+}
+button.primary:hover{background:var(--accent-ink)}
+button.ghost{
+  background:none; border:1.5px solid var(--line); color:var(--ink-2);
+  border-radius:10px; padding:10px 18px; font:inherit; cursor:pointer;
+}
+button.ghost:hover{border-color:var(--accent); color:var(--accent-ink)}
+
+/* ---------- result card ---------- */
+section.result{display:none; margin-top:34px}
+section.result.show{display:block}
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:16px;
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.card-head{
+  padding:24px 28px 18px; border-bottom:2px solid var(--accent);
+  display:flex; flex-wrap:wrap; gap:14px 24px; align-items:flex-end; justify-content:space-between;
+}
+.card-head .t .cap{font-size:13px; letter-spacing:.2em; color:var(--accent); font-weight:700}
+.card-head h2{margin:.15em 0 0; font-size:clamp(20px,3.4vw,28px); line-height:1.35}
+.role-pick{display:flex; align-items:center; gap:8px; font-size:14px; color:var(--ink-2)}
+.role-pick select{
+  font:inherit; font-size:14px; padding:6px 10px; border-radius:8px;
+  border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer;
+}
+.kw-row{padding:12px 28px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.kw-row .kw-label{font-size:13px; color:var(--ink-3); letter-spacing:.06em}
+.kw{
+  font-size:13px; background:var(--accent-soft); color:var(--accent-ink);
+  border-radius:999px; padding:3px 12px; font-weight:600;
+}
+.grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:0;
+}
+.fielded{
+  padding:20px 28px 22px; border-bottom:1px solid var(--line);
+}
+.fielded.full{grid-column:1 / -1}
+.grid .fielded:nth-child(odd):not(.full){border-right:1px solid var(--line)}
+.fielded .num{
+  font-size:12px; color:var(--ink-3); letter-spacing:.14em; font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.fielded h3{
+  margin:2px 0 2px; font-size:17px; letter-spacing:.04em; color:var(--ink);
+  display:flex; align-items:center; gap:8px;
+}
+.fielded h3 .tag{
+  font-size:11px; font-weight:700; letter-spacing:.08em; border-radius:5px; padding:2px 8px;
+}
+.fielded.f-pos h3 .tag{background:var(--good-soft); color:var(--good)}
+.fielded.f-risk h3 .tag{background:var(--risk-soft); color:var(--risk)}
+.fielded .q{font-size:13.5px; color:var(--ink-3); margin:0 0 10px}
+.fielded .body{outline:none}
+.fielded .body:focus-visible{box-shadow:0 0 0 2px var(--accent); border-radius:8px}
+.fielded .body[contenteditable]:hover{background:color-mix(in srgb, var(--accent-soft) 35%, transparent); border-radius:8px}
+.fielded .body ul{margin:0; padding-left:1.25em}
+.fielded .body li{margin:4px 0}
+.fielded .body p{margin:0}
+.fielded.f-mission .body p{
+  font-family:"Noto Serif TC","PMingLiU",serif; font-size:18px; line-height:1.85;
+}
+.fielded.f-pos{background:color-mix(in srgb, var(--good-soft) 40%, var(--card))}
+.fielded.f-risk{background:color-mix(in srgb, var(--risk-soft) 40%, var(--card))}
+.fielded.f-evp .body p{border-left:3px solid var(--copper); padding-left:14px}
+.generic-note{
+  margin:0; padding:12px 28px; font-size:14px; color:var(--ink); background:var(--copper-soft);
+  border-bottom:1px solid var(--line); display:none;
+}
+.generic-note.show{display:block}
+.edit-hint{padding:10px 28px 0; font-size:13px; color:var(--ink-3)}
+.toolbar{
+  padding:16px 28px 22px; display:flex; gap:12px; flex-wrap:wrap;
+}
+.toast{
+  position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px);
+  background:var(--ink); color:var(--paper); padding:10px 22px; border-radius:999px;
+  font-size:14px; opacity:0; pointer-events:none; transition:all .25s;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+/* ---------- footer ---------- */
+footer.site{
+  margin-top:40px; color:var(--ink-3); font-size:13.5px; line-height:1.9;
+  border-top:1px solid var(--line); padding-top:18px;
+}
+footer.site strong{color:var(--ink-2)}
+
+@media (max-width:760px){
+  .grid{grid-template-columns:1fr}
+  .grid .fielded:nth-child(odd):not(.full){border-right:none}
+  .compare{grid-template-columns:1fr}
+  .fielded, .card-head, .kw-row, .toolbar{padding-left:20px; padding-right:20px}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important}
+}
+
+/* ---------- print:只印輪廓卡 ---------- */
+@media print{
+  body{background:#fff; color:#000; font-size:12.5px}
+  header.site, details.concept, section.panel, .toolbar, .edit-hint, footer.site,
+  .role-pick, .toast{display:none !important}
+  .wrap{max-width:none; padding:0}
+  section.result{margin-top:0}
+  .card{border:1.5px solid #333; box-shadow:none; border-radius:8px}
+  .fielded, .kw-row{border-color:#bbb; padding:10px 16px}
+  .card-head{padding:14px 16px 10px; border-bottom-color:#333}
+  .fielded.f-pos,.fielded.f-risk{background:#fff}
+  .grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="site">
+  <div class="eyebrow">Airoha 達發科技 · 招募主管工具</div>
+  <h1>技術職缺成功輪廓卡</h1>
+  <p class="subtitle">輸入職缺名稱、或貼上 104 職務說明的內容,立即產生一張八欄位的「成功輪廓卡」參考草稿——把「找一個抗壓性強的人」變成「六個月後他必須能獨立完成什麼」。</p>
+</header>
+
+<details class="concept">
+  <summary>為什麼要「職務具體化」?(課程觀念摘要)</summary>
+  <div class="concept-body">
+    <p>招募失準,常常不是面談技巧問題,而是一開始的人才畫像太模糊。</p>
+    <div class="compare">
+      <div class="col bad">
+        <h3>✕ 不要只說要找</h3>
+        <ul>
+          <li>抗壓性強的人</li>
+          <li>認真負責的人</li>
+          <li>邏輯好的人</li>
+          <li>穩定的人</li>
+        </ul>
+      </div>
+      <div class="col goodc">
+        <h3>✓ 而是先回答</h3>
+        <p>「這個人進來<strong>六個月後,必須能獨立完成什麼?</strong>」</p>
+      </div>
+    </div>
+    <p>例如,不要只定義「追根究柢」,而是定義為:</p>
+    <p class="mission-quote">面對跨軟硬體異常時,能建立假設、蒐集數據、逐步排除原因,找到根因並形成可重複使用的解決方案。</p>
+    <p>下方工具會依職缺產生八個欄位的參考內容,<strong>每一格都可以直接點擊修改</strong>——請各組挑一個目前正在招募、或未來半年可能招募的職缺,把草稿改成你們團隊的版本。</p>
+  </div>
+</details>
+
+<section class="panel" aria-label="輸入職缺">
+  <h2>建立你的輪廓卡</h2>
+  <p class="hint">兩種用法擇一即可:直接輸入職缺名稱;或把 104 職務頁的「工作內容/職務說明」整段複製貼到下方,系統會比對關鍵字產生更貼近的草稿。</p>
+
+  <label class="fld" for="jobTitle">職缺名稱</label>
+  <input type="text" id="jobTitle" placeholder="例如:資深韌體工程師、藍牙 RF 系統工程師、DSP 演算法工程師…" autocomplete="off">
+  <div class="chips" id="quickChips" aria-label="常見職缺快速選擇"></div>
+  <div class="url-note" id="urlNote">
+    偵測到你貼的是 104 <strong>網址</strong>。基於瀏覽器安全限制,本頁無法直接連線讀取 104 頁面——請改為:開啟該職缺頁 → 全選「工作內容」文字 → 複製貼到下方「職務內容」欄位,即可得到相同效果。
+  </div>
+
+  <label class="fld" for="jobDesc">職務內容 <span class="opt">(選填:貼上 104 上的工作內容、條件要求等文字)</span></label>
+  <textarea id="jobDesc" placeholder="把 104 職缺頁的「工作內容」「其他條件」整段貼進來,系統會偵測技術關鍵字(C/C++、Verilog、UVM、RTOS、Bluetooth、DSP…)來比對最接近的職缺範本。"></textarea>
+
+  <div class="actions">
+    <button class="primary" id="genBtn">產生成功輪廓卡</button>
+    <button class="ghost" id="clearBtn">清除重來</button>
+  </div>
+</section>
+
+<section class="result" id="result" aria-live="polite">
+  <div class="card" id="card">
+    <div class="card-head">
+      <div class="t">
+        <div class="cap">技術職缺成功輪廓卡</div>
+        <h2 id="cardTitle">—</h2>
+      </div>
+      <div class="role-pick">
+        <label for="roleSel">套用範本:</label>
+        <select id="roleSel"></select>
+      </div>
+    </div>
+    <p class="generic-note" id="genericNote">目前套用的是<strong>通用範本</strong>:系統未能從職缺名稱/內容比對到特定技術職系。建議從右上角「套用範本」挑一個最接近的職系,或直接把各欄位改寫成貴團隊的版本。</p>
+    <div class="kw-row" id="kwRow" hidden>
+      <span class="kw-label">從職務內容偵測到的關鍵技能:</span>
+      <span id="kwChips"></span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="edit-hint">✎ 每一格內容都可以直接點擊編輯——把草稿改成你們團隊的真實版本,再列印或下載。</p>
+    <div class="toolbar">
+      <button class="ghost" id="printBtn">🖨 列印 / 存 PDF</button>
+      <button class="ghost" id="mdBtn">⬇ 下載 Markdown</button>
+      <button class="ghost" id="copyBtn">⧉ 複製全文</button>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <p><strong>工作坊建議:</strong>請每組選擇一個目前正在招募、或未來半年可能招募的職缺實際演練;產出的輪廓卡可直接作為 JD 改寫、面談題目設計與用人共識會議的基礎。</p>
+  <p>本工具的內容為<strong>參考草稿</strong>,由內建的技術職缺範本庫與關鍵字比對產生,請主管依實際職務調整;所有輸入僅在你的瀏覽器內處理,<strong>不上傳、不儲存</strong>。</p>
+</footer>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ================= 範本庫 ================= */
+/* 每個職系範本:8 欄位內容 + 比對關鍵字(kt=名稱類強關鍵字, kw=內容類弱關鍵字) */
+const ROLES = [
+{
+id:"fw", name:"韌體工程師",
+kt:["韌體","firmware","嵌入式","embedded","mcu","單晶片","fw工程師"],
+kw:["rtos","freertos","中斷","interrupt","driver","驅動","bootloader","uart","spi","i2c","arm","risc-v","riscv","低功耗","bring up","bring-up","c語言","keil","jtag","藍牙","bluetooth","ble","wifi","wi-fi"],
+mission:"讓晶片的硬體能力透過穩定、高效的韌體被完整發揮,支撐產品在客戶端可靠運作。",
+outcomes:["獨立負責一個韌體模組(如協定層、電源管理或周邊驅動),完成開發、測試並整合進主線版本。","面對跨軟硬體異常時,能建立假設、蒐集 log 與量測數據,獨立定位問題層級(硬體/韌體/協定),形成可重複使用的解決方案。","建立或改善一項團隊開發資產,例如自動化測試腳本或除錯工具。"],
+must:["紮實的 C 語言與資料結構能力,能讀懂並安全地修改既有程式碼。","嵌入式系統基礎:中斷、記憶體管理、RTOS 工作排程,並能看懂電路圖與 datasheet。","系統化除錯能力:會用示波器/邏輯分析儀/JTAG,由現象建立假設並逐步收斂。"],
+train:["公司晶片架構與 SDK 細節","藍牙/Wi-Fi 等協定深度知識","量產導入與客戶問題處理流程","與 FAE、硬體團隊的協作節奏"],
+scenes:["客戶回報量產線上偶發當機,只有機率性 log,需在時限內找出根因。","硬體、韌體、協定多方都說「不是我的問題」,需要用數據釐清責任邊界。","功能需求與記憶體/功耗限制衝突,需要做取捨並向上溝通。"],
+pos:["能具體描述一個自己從現象追到根因的除錯案例,包含假設、驗證方法與最終修正。","主動提到如何把解法變成工具或文件,讓團隊可以重複使用。","談到跨部門爭議時,聚焦「用什麼數據釐清」而不是「誰的錯」。"],
+risk:["除錯經驗停留在「改一改就好了」,說不出驗證根因的方法。","只做過上層應用,對硬體訊號、暫存器操作明顯迴避。","把過去的問題都歸因於別人(硬體爛、需求亂),缺乏自己的因應作法。"],
+evp:"在這裡寫的韌體會進入千萬台終端裝置;能完整經歷從晶片 bring-up 到客戶量產的全流程,是市場上少有的深度歷練。"
+},
+{
+id:"digital", name:"數位 IC 設計工程師",
+kt:["數位ic","數位設計","rtl","ic設計","asic","soc設計","數位電路"],
+kw:["verilog","systemverilog","vhdl","synthesis","合成","timing","sta","lint","cdc","fpga","tapeout","tape-out","下線","低功耗","clock","fsm","pipeline"],
+mission:"將產品規格轉化為面積、功耗與時序兼顧、可量產的數位電路,直接決定晶片的競爭力。",
+outcomes:["獨立完成一個功能區塊的 RTL 設計與 lint/CDC 清理,交付可驗證的設計與規格文件。","與驗證團隊協作完成 coverage 收斂,負責區塊在 tape-out 前 bug 收斂達標。","完成一次合成與時序收斂,能對 PPA 取捨提出設計端的改善方案。"],
+must:["數位電路與計算機組織基礎紮實,理解 pipeline、FSM 與跨時脈域處理。","能以 Verilog/SystemVerilog 寫出可綜合、可維護的 RTL。","能讀懂 timing report,與後端協作解決 setup/hold 與 congestion 問題。"],
+train:["公司設計流程與 EDA 環境","特定協定 IP(USB/PCIe/藍牙基頻等)領域知識","低功耗設計技巧(UPF、clock gating 策略)"],
+scenes:["tape-out 前發現時序或功能問題,需在極短時間內判斷風險並決定修正方式。","規格在設計中途變更,需評估影響範圍並重新承諾時程。","驗證回報的 bug 與自己的理解不一致,需要一起追到波形層級。"],
+pos:["能畫出自己設計區塊的方塊圖,並解釋每個介面協定與 corner case。","描述 bug 時能講出「當時漏想了什麼、之後如何改變設計習慣」。","主動關心自己的設計在系統整體中的角色與對下游的影響。"],
+risk:["只寫過課程等級的 RTL,對 lint/CDC/可測性等量產要求陌生且不以為意。","被問「你的設計如何被驗證」答不出策略,認為那是驗證團隊的事。","對時脈、reset、非同步介面等基本功答錯,且無法舉一反三。"],
+evp:"產品線橫跨連接與智慧音訊 SoC,設計會真實量產出貨;在幾個專案內就能完整累積從 spec 到 tape-out 的實戰經驗。"
+},
+{
+id:"analog", name:"類比/混合訊號 IC 設計工程師",
+kt:["類比","analog","混合訊號","mixed-signal","mixed signal","pmic","電源管理ic"],
+kw:["pll","adc","dac","ldo","spice","cadence","virtuoso","layout","佈局","pvt","corner","雜訊","noise","bandgap","opamp","運算放大器","serdes"],
+mission:"在製程與雜訊的物理限制中,設計出效能與良率兼顧的類比電路——晶片與真實世界之間的介面。",
+outcomes:["獨立完成一個類比區塊(如 LDO、PLL 子區塊或 ADC 前級)的電路設計與模擬,涵蓋 PVT 與 corner 分析。","與 layout 工程師協作完成佈局並通過 post-sim 驗證。","參與一次 silicon 驗證:能操作儀器量測自己的電路,並解釋量測與模擬的差異。"],
+must:["類比電路理論紮實:回授、穩定度、雜訊分析,並具備手算估計的 intuition。","熟悉 SPICE 類模擬工具,能自行設計完整的驗證模擬計畫。","能解讀量測結果,判斷問題出在設計、佈局還是量測方法。"],
+train:["特定製程 PDK 特性","ESD/latch-up 等可靠度知識","mixed-signal 整合驗證方法","量產良率分析"],
+scenes:["silicon 量測結果與模擬不符,需在有限樣品數下設計實驗釐清原因。","效能、面積、功耗互相衝突,需與系統端協商規格。","製程飄移導致 corner 表現異常,需判斷是否影響量產。"],
+pos:["講解自己的電路時,會主動談 trade-off 與失敗過的版本。","量測經驗豐富,說得出儀器限制與量測校準的概念。","對「模擬與現實的差距」有敬畏心,並有自己的檢查清單。"],
+risk:["只會操作模擬流程,講不出電路 intuition 與手算估計。","沒有實驗室量測經驗,或量測與模擬有差異時一律歸咎製程。","對佈局寄生效應的影響沒有概念。"],
+evp:"少數能完整經歷「設計—佈局—矽驗證—量產」循環的環境;類比工程師的手感,在這裡以專案為單位快速累積。"
+},
+{
+id:"dv", name:"IC 設計驗證工程師 (DV)",
+kt:["驗證工程師","design verification","dv工程師","ic驗證","設計驗證"],
+kw:["uvm","systemverilog","testbench","coverage","assertion","formal","regression","迴歸","模擬","simulation","scoreboard","sequence"],
+mission:"在晶片下線前找出所有會傷害產品的 bug——tape-out 品質的最後防線。",
+outcomes:["獨立負責一個模組的驗證:從驗證計畫、testbench 建置到 coverage 收斂。","找出具代表性的設計 bug 並協助釐清,回報品質獲得設計端信任。","建立可重複使用的驗證元件(agent/sequence/scoreboard)供團隊沿用。"],
+must:["SystemVerilog 與 UVM(或等效方法學)的實作能力。","能讀懂設計規格,並轉化為驗證計畫與 corner case 清單。","除錯收斂能力:能從波形與 log 判斷問題在設計還是 testbench。"],
+train:["formal 驗證","低功耗驗證(UPF)","特定協定領域知識","迴歸與 CI 環境維運"],
+scenes:["時程壓力下 coverage 未收斂,需評估風險並誠實回報。","設計者認為「這情境不會發生」,需要用規格與數據說服對方。","tape-out 後發現漏掉的 bug,需檢討驗證方法並落實改善。"],
+pos:["對「找到 bug」有成就感,能具體描述最得意的一隻 bug 與找到它的方法。","提問時會追規格的模糊地帶,展現對 corner case 的敏感度。","能站在設計者角度溝通,而不是丟出一個 fail 就結束。"],
+risk:["把驗證當成跑測試腳本,說不出驗證計畫背後的思考邏輯。","coverage 只求數字達標,講不出未涵蓋的風險在哪裡。","與設計端互動只有指責或退縮兩種模式。"],
+evp:"驗證在這裡不是配角——晶片能不能如期量產,DV 的判斷就是決策依據,影響力直接可見。"
+},
+{
+id:"sw", name:"軟體工程師",
+kt:["軟體工程師","software engineer","軟體開發","sw工程師","應用軟體"],
+kw:["c++","python","linux","android","kernel","driver","驅動程式","sdk","api","git","app","tool","工具開發","java","跨平台","middleware"],
+mission:"打造讓晶片能力被客戶輕鬆整合的軟體層——SDK、驅動與工具的品質,決定客戶的開發體驗。",
+outcomes:["獨立負責一個 SDK 模組或工具的開發與維護,完成需求、實作、測試與文件。","解決客戶回報的軟體問題並將修正納入正式版本,回應品質獲 FAE 信任。","對既有程式碼提出並完成一項重構或自動化改善。"],
+must:["紮實的 C/C++(或職缺主語言)能力與軟體工程素養:版控、測試、code review。","能在不熟悉的大型程式碼庫中快速定位與安全修改。","跨層除錯能力:能沿著 app—SDK—driver—韌體的路徑收斂問題。"],
+train:["晶片架構與韌體介面細節","特定 OS 平台(Linux kernel、Android)深度","客戶支援與版本釋出流程"],
+scenes:["客戶整合出問題但只給得出片段資訊,需要設計重現步驟。","要在相容性包袱下改善老程式碼,牽一髮而動全身。","多專案並行,需要對 FAE、PM 的排序期待做明確溝通。"],
+pos:["能舉例說明如何把一個模糊的客訴收斂成可重現的 bug。","在意 API 設計與文件品質,能站在使用者角度思考。","有自動化習慣——重複做兩次的事就寫成工具。"],
+risk:["只在乎功能會動,對測試與邊界條件敷衍。","讀不懂別人的程式碼就急著全部重寫。","跨層問題一遇到韌體/硬體邊界就停住等人。"],
+evp:"軟體是 IC 設計公司槓桿最大的一層——你寫的 SDK 與工具,決定數百家客戶的開發體驗。"
+},
+{
+id:"algo", name:"DSP / 演算法工程師",
+kt:["演算法","algorithm","dsp","訊號處理","機器學習","machine learning","ai工程師","深度學習"],
+kw:["audio","音訊","anc","降噪","回音","echo","codec","matlab","python","模型","model","神經網路","nn","定點","fixed-point","語音","喚醒","kws","tensorflow","pytorch"],
+mission:"把數學與訊號處理能力,轉化為在有限運算資源上跑得動的產品級演算法。",
+outcomes:["針對一個演算法模組(如降噪、回音消除或喚醒詞)完成效能評估與改善,指標具體可比較。","完成一次演算法的定點化/優化並整合進 DSP 或 MCU,通過即時性與品質驗收。","建立可重複使用的評測資料集與自動化評估流程。"],
+must:["訊號處理或機器學習理論基礎,能從數學層面解釋演算法行為。","工程實作能力:Python/C 雙棲,理解定點運算與運算量估計。","實驗素養:控制變因、建立 baseline、用客觀指標說話。"],
+train:["特定音訊/通訊領域知識","目標平台 DSP 架構與優化技巧","與韌體整合的即時系統知識"],
+scenes:["客觀指標變好但主觀聽感變差,需要建立新的評估方法。","演算法效果與運算量/記憶體衝突,需要取捨並說服產品端。","資料集與實際場景不符,需要自己設計收集與標註方案。"],
+pos:["談效果時自然帶出評估條件與 baseline,不只說「變好了」。","能解釋演算法失效的場景與原因,而不只講成功案例。","對「在小晶片上跑起來」有熱情,而非只想追最新論文。"],
+risk:["只在 notebook 裡做過實驗,對資源限制與即時性沒有概念。","評估方法草率,講不出測試集的來源與代表性。","把調參當研究,說不出背後的原理假設。"],
+evp:"演算法在這裡不是論文而是產品——你的演算法會在上億台耳機與裝置上即時運作,這種落地規模非常少見。"
+},
+{
+id:"rf", name:"RF 工程師",
+kt:["rf","射頻","radio frequency","天線","antenna"],
+kw:["lna","pa","transceiver","收發機","matching","阻抗","s參數","頻譜","spectrum","evm","靈敏度","sensitivity","emi","emc","2.4g","認證","fcc","佈線"],
+mission:"在雜訊、干擾與功耗的夾縫中,讓無線連結在真實環境穩定可靠——RF 是連接晶片的靈魂。",
+outcomes:["獨立完成一個 RF 區塊或系統的量測驗證(靈敏度、EVM、雜散等),產出完整報告。","主導一次客戶端 RF 問題除錯:從量測數據定位原因並提出對策。","建立一套量測自動化腳本或治具改善,縮短驗證時間。"],
+must:["RF 理論基礎:阻抗匹配、雜訊、非線性失真。","熟練操作頻譜儀、網路分析儀等儀器,並能判讀結果。","系統觀:理解 RF 指標如何影響協定層與使用者體驗。"],
+train:["特定協定射頻規範(BT/Wi-Fi 認證項目)","晶片內部校準機制","量產測試與良率分析"],
+scenes:["客戶板子 RF 表現不佳,原因可能在晶片、佈局、天線或韌體設定,需要層層切分。","量測結果邊緣性通過,需判斷量產風險。","認證測試前發現超標項目,時間壓力下要找出對策。"],
+pos:["除錯案例能講出「怎麼切分變因」的實驗設計。","對量測誤差來源敏感,會先確認治具與校準。","能把 RF 專業翻譯成韌體或系統工程師聽得懂的語言。"],
+risk:["只會按 SOP 量測,數據異常時提不出假設與下一步。","忽視接地、線材、治具等基本功造成的量測假象。","跨領域溝通時只丟術語,無法協作。"],
+evp:"連接晶片出貨量以億計——你處理的每個 RF 細節都被放大百萬倍,是業界最搶手的實戰歷練。"
+},
+{
+id:"test", name:"測試 / 產品工程師",
+kt:["測試工程師","test engineer","product engineer","產品工程師","量產測試"],
+kw:["ate","teradyne","advantest","測試程式","yield","良率","cp","ft","dft","封裝","gr&r","datalog","bin","stdf"],
+mission:"用最低的測試成本守住出貨品質,讓每一顆出貨晶片都值得信任。",
+outcomes:["獨立完成一個產品的測試程式開發或維護,通過 GR&R 與量產導入。","主導一次良率異常分析:從測試數據定位原因,與設計/製程協作解決。","完成一項測試時間或成本優化,效益可量化。"],
+must:["半導體測試基礎:CP/FT、ATE 架構、各測試項目的意義。","資料分析能力:能從大量測試數據中找出模式與異常。","程式能力:測試程式語言或 Python 資料處理。"],
+train:["特定 ATE 機台平台","產品領域知識(RF/音訊測試的特殊性)","與設計端的 DFT 協作"],
+scenes:["量產線良率突然下滑,每小時都在燒錢,需快速判斷停線或放行。","測試數據邊緣性異常,要在品質風險與出貨壓力之間提出建議。","跨廠區、跨時區協調除錯資源。"],
+pos:["分析案例能講出從數據到根因的推理鏈,以及如何驗證。","對「放行/停線」的判斷展現品質意識與擔當。","主動用程式解決重複性的資料工作。"],
+risk:["只會執行既有測試流程,異常時只能上報等指示。","對測試項目背後的設計意義沒有好奇心。","數據分析只停留在看平均值。"],
+evp:"站在設計與製造的交會點,量產世界的真實數據都經過你的手——是往良率、品質或設計端發展的絕佳起點。"
+},
+{
+id:"fae", name:"FAE / 應用工程師",
+kt:["fae","應用工程師","field application","技術支援","客戶支援"],
+kw:["客戶","design-in","design in","reference design","公版","導入","量產問題","issue","support","demo","窗口"],
+mission:"成為客戶眼中「會說人話的晶片專家」,讓客戶用最短時間把晶片變成量產產品。",
+outcomes:["獨立支援指定客戶的設計導入:從評估、除錯到量產,解決主要技術問題。","建立或改善一份技術文件/FAQ/範例程式,明顯減少重複性提問。","完成一次跨部門問題處理:把客戶端異常收斂成內部可重現的 issue,並追蹤到結案。"],
+must:["軟硬體整合基礎:看得懂電路圖、會抓 log、能重現問題。","問題收斂能力:能從客戶的模糊描述中問出關鍵資訊。","溝通與情緒管理:在客戶壓力下維持專業與節奏。"],
+train:["公司產品線細節與常見整合問題","客戶產業生態","進階除錯工具的使用"],
+scenes:["客戶量產在即遇到 blocking issue,資訊不全但每天被催進度。","客戶問題其實出在對方的設計,需要不傷關係地引導修正。","同時支援多家客戶,需要排序並與內部資源談判。"],
+pos:["描述客訴處理時,展現「先重現、再收斂、後承諾」的紀律。","能舉例把技術問題翻譯給非技術對象的經驗。","被客戶施壓過,仍能講出從衝突中建立信任的過程。"],
+risk:["只想當傳聲筒,把客戶問題原封不動丟給 RD。","習慣過度承諾,用「應該可以」回應沒把握的事。","抱怨客戶不專業,缺乏同理與引導的意識。"],
+evp:"這是最快看懂整個產業如何運作的位置——技術夠深、視野夠廣,是往架構師、產品經理或技術主管的黃金跳板。"
+},
+{
+id:"hw", name:"硬體工程師",
+kt:["硬體工程師","hardware engineer","電路設計","板端","系統硬體"],
+kw:["pcb","schematic","電路圖","layout","emc","emi","電源設計","power","訊號完整性","si","pi","bring up","bring-up","零件","bom","焊接"],
+mission:"設計讓晶片發揮完整效能的參考平台與系統硬體——晶片與客戶產品之間的橋樑。",
+outcomes:["獨立完成一塊板子的電路設計、layout 審查與 bring-up,達到可交付客戶的品質。","主導一次系統級異常分析(電源、訊號完整性或 EMI),找到根因並落實對策。","產出一份設計指南或 checklist,提升團隊或客戶的設計成功率。"],
+must:["電路學基礎,以及電源與高速訊號設計知識。","儀器實作能力:示波器、電源分析等量測與判讀。","能把 datasheet 與規格書轉化為具體設計決策。"],
+train:["公司晶片的特定設計要點","EMC 對策實務","與 IC 設計端的協同除錯"],
+scenes:["板子 bring-up 不起來,問題可能在焊接、電源時序或晶片設定,需要系統性排除。","客戶抄板出問題,要遠端引導對方量測。","成本要求砍料,需評估風險底線並堅持立場。"],
+pos:["bring-up 經驗豐富,能講出自己的除錯順序與理由。","對「為什麼這樣佈局」說得出電氣原因,而非只是慣例。","動手能力強,樂於自己焊接、飛線驗證假設。"],
+risk:["只畫過圖沒下過實驗室,量測經驗貧乏。","出問題先怪製造或零件,缺乏驗證習慣。","對訊號完整性、電源完整性概念模糊。"],
+evp:"你的參考設計會被全球客戶直接帶進量產產品——硬體功力在真實出貨壓力中快速升級。"
+},
+{
+id:"backend", name:"數位後端 (PD) 工程師",
+kt:["後端","physical design","apr","pd工程師","實體設計"],
+kw:["place and route","floorplan","innovus","icc","drc","lvs","signoff","sta","eco","upf","congestion","timing closure","tcl"],
+mission:"把 RTL 變成能量產的實體晶片——在奈米尺度上守住時序、功耗與良率。",
+outcomes:["獨立完成一個 block 的 APR 流程,時序與 DRC/LVS 收斂達 tape-out 標準。","完成一次時序或 congestion 問題的分析改善,並能與前端協作調整設計。","建立或優化一段自動化流程腳本,提升團隊效率。"],
+must:["數位後端流程知識:從 floorplan 到 signoff 各步驟的意義。","時序分析能力:能讀懂並處理 STA 報告。","腳本能力(TCL/Python)與解決流程問題的耐性。"],
+train:["先進製程的特定規則","低功耗實作(UPF)","與 foundry 的協作流程"],
+scenes:["signoff 前 DRC 爆量或時序不收斂,時程倒數計時。","前端 ECO 頻繁,需要快速評估影響並重跑。","工具行為異常,需要在龐大的 log 中找線索。"],
+pos:["能解釋每個流程步驟「為什麼要做」,而不只是會操作。","處理過棘手的收斂問題,講得出嘗試路徑與最後解法。","自動化意識強,重複性工作會主動寫腳本。"],
+risk:["只會照 flow 執行,參數背後的意義一問三不知。","對前端設計沒興趣,出問題只會丟回去。","缺乏版本與資料管理紀律。"],
+evp:"一年多次 tape-out 的節奏,讓你在最短時間內累積完整的先進製程實戰經驗。"
+},
+{
+id:"pm", name:"技術專案經理 (PM)",
+kt:["專案經理","專案管理","project manager","pm","program manager","npi"],
+kw:["時程","schedule","里程碑","milestone","跨部門","風險","stakeholder","gantt","進度","資源","協調"],
+mission:"讓跨部門的晶片開發專案如期、如質收斂——在混沌中建立秩序與節奏。",
+outcomes:["獨立管理一條產品線或專案的開發時程,建立可信的里程碑追蹤與風險預警。","主導跨部門會議節奏:關鍵決策有紀錄、有追蹤、有結案。","完成一次危機處理:時程或資源衝突時提出選項與建議,協助決策。"],
+must:["專案管理基本功:時程、風險、利害關係人管理。","技術理解力:聽得懂 RD 的語言,能判斷風險的技術含量。","推動力:在沒有職權的情況下,讓事情前進的溝通與協商能力。"],
+train:["晶片開發流程細節(tape-out、驗證、量產節點)","公司決策文化","供應鏈與客戶端知識"],
+scenes:["多個部門互等產出,時程眼看要滑,需要找出真正的卡點。","RD 回報「快好了」但一再延期,需要建立可驗證的追蹤方式。","高層要求提前時程,需要基於數據談判範圍與資源。"],
+pos:["能具體說出如何發現被隱藏的時程風險。","追進度的方式是「拆解與驗證」,而不是「催與盯」。","對技術細節有好奇心,會主動搞懂名詞背後的意義。"],
+risk:["只會做會議記錄與傳話,沒有自己的判斷。","報喜不報憂,風險總在爆炸前一刻才浮現。","用權威壓人,而不是用數據與關係推動。"],
+evp:"在這裡 PM 不是行政角色——你掌握整條產品線的節奏,是最快練成「技術 × 管理」複合能力的位置。"
+}
+];
+
+/* 通用範本:未比對到職系時使用 */
+const GENERIC = {
+id:"generic", name:"通用技術職(請調整)",
+kt:[], kw:[],
+mission:"(請填寫:這個職位存在的核心目的——它為團隊/產品/客戶解決什麼問題?若這個職位三個月沒人做,會發生什麼事?)",
+outcomes:["到職六個月後,能獨立完成:___(一個可交付、可檢核的成果,例如「獨立負責 X 模組的開發與除錯」)。","第二項成果:___(建議包含一次「解決跨部門/跨領域問題」的經驗)。","第三項成果(選填):___(建議包含一項「建立可重複使用資產」,如工具、文件、流程)。"],
+must:["硬技能:___(到職第一天就要會,無法等培訓的技術能力)。","問題解決:___(把「邏輯好」具體化:面對什麼情境、要能做到什麼程度?)","協作/溝通:___(這個職位必須跟誰協作?需要什麼等級的溝通能力?)"],
+train:["公司/產品特定知識(內部工具、流程、領域知識)","可以由資深同仁帶的進階技能","證照或特定工具經驗(若非立即必要)"],
+scenes:["這個職位最常遇到的困難:___(例如時程壓力、資訊不全、跨部門衝突)。","最容易讓人受挫的情境:___(誠實寫,面談時反而能篩出合適的人)。","最需要獨立判斷的時刻:___。"],
+pos:["候選人描述過去經驗時,能講出「情境—行動—結果」的完整脈絡。","主動說明自己如何驗證問題的根因,而不只是結果。","談到衝突時聚焦解決方法與數據,而非指責他人。"],
+risk:["成就都是「我們團隊」,追問細節後說不出自己的具體貢獻。","把過去的失敗全部歸因於外部因素。","對這個職位要解決的問題沒有提出任何自己的問題或好奇。"],
+evp:"(請填寫:為什麼優秀人才應該選這個職位?想想:技術挑戰的獨特性、成長速度、影響力範圍、團隊與主管風格。)"
+};
+
+/* ================= 關鍵字偵測(顯示用) ================= */
+const SKILL_KWS = ["C++","C#","C語言","Python","Java","Rust","Go","TCL","Perl","Shell","MATLAB",
+"Verilog","SystemVerilog","VHDL","UVM","RTL","FPGA","ASIC","SoC","DFT","STA","CDC","Lint","UPF","Tape-out",
+"RTOS","FreeRTOS","Zephyr","Linux","Android","Kernel","Driver","Bootloader","MCU","ARM","RISC-V","DSP",
+"Bluetooth","BLE","Wi-Fi","WiFi","Zigbee","Thread","Matter","USB","PCIe","Ethernet","UART","SPI","I2C","I2S",
+"Audio","ANC","Codec","降噪","回音消除","喚醒詞","TensorFlow","PyTorch","機器學習","深度學習",
+"RF","LNA","PA","PLL","ADC","DAC","LDO","SerDes","EMI","EMC","天線","頻譜儀","示波器","邏輯分析儀","JTAG",
+"ATE","CP","FT","良率","GR&R","STDF","Cadence","Synopsys","SPICE","Virtuoso","Innovus","DRC","LVS",
+"Git","Jenkins","CI/CD","Docker","AWS","SQL","Schematic","PCB","Layout","SI","PI","Datasheet","Bring-up"];
+
+/* ================= 比對引擎 ================= */
+function normalize(s){ return (s||"").toLowerCase(); }
+const isAlnum = c => /[a-z0-9]/.test(c || "");
+
+/* 邊界感知的關鍵字比對:英文字詞前後不可緊鄰英數字,
+   避免 "regression" 誤判為 "SI"、"systemverilog" 誤判為 "verilog";中文照子字串比對 */
+function hasKw(lower, kw){
+  const k = normalize(kw);
+  const checkHead = isAlnum(k[0]), checkTail = isAlnum(k[k.length - 1]);
+  let i = lower.indexOf(k);
+  while(i !== -1){
+    const before = lower[i - 1], after = lower[i + k.length];
+    if((!checkHead || !isAlnum(before)) && (!checkTail || !isAlnum(after))) return true;
+    i = lower.indexOf(k, i + 1);
+  }
+  return false;
+}
+
+function matchRole(title, desc){
+  const t = normalize(title), d = normalize(desc);
+  let best = null, bestScore = 0;
+  for(const r of ROLES){
+    let score = 0;
+    for(const k of r.kt){
+      if(hasKw(t, k)) score += 10;
+      if(hasKw(d, k)) score += 4;
+    }
+    for(const k of r.kw){
+      if(hasKw(t, k)) score += 3;
+      if(hasKw(d, k)) score += 1.5;
+    }
+    if(score > bestScore){ bestScore = score; best = r; }
+  }
+  return bestScore >= 3 ? best : null;
+}
+
+function detectSkills(text){
+  const found = [];
+  const seen = new Set();
+  const lower = normalize(text);
+  for(const kw of SKILL_KWS){
+    const key = normalize(kw).replace(/[^a-z0-9一-鿿]/g, "");
+    if(seen.has(key)) continue;
+    if(hasKw(lower, kw)){ found.push(kw); seen.add(key); }
+    if(found.length >= 14) break;
+  }
+  return found;
+}
+
+function looksLikeUrl(s){
+  return /https?:\/\/|www\.|104\.com/i.test(s||"");
+}
+
+/* ================= 卡片渲染 ================= */
+const FIELDS = [
+ {key:"mission", n:"01", title:"職務使命", q:"這個職位存在的核心目的為何?", cls:"f-mission full", type:"p"},
+ {key:"outcomes",n:"02", title:"6 個月成果", q:"到職六個月後,應該能完成哪兩至三項成果?", cls:"full", type:"ul"},
+ {key:"must",   n:"03", title:"必備能力", q:"哪三項能力到職時就必須具備?", cls:"", type:"ul"},
+ {key:"train",  n:"04", title:"可培養能力", q:"哪些能力進來後可以透過訓練補足?", cls:"", type:"ul"},
+ {key:"scenes", n:"05", title:"關鍵工作情境", q:"這個職位最常遇到哪些困難、衝突或壓力?", cls:"full", type:"ul"},
+ {key:"pos",    n:"06", title:"正向證據", q:"候選人說出哪些行為,代表可能符合需求?", cls:"f-pos", type:"ul", tag:"✓ 加分訊號"},
+ {key:"risk",   n:"07", title:"風險證據", q:"出現哪些具體行為,代表錄用風險較高?", cls:"f-risk", type:"ul", tag:"⚠ 警示訊號"},
+ {key:"evp",    n:"08", title:"候選人價值主張", q:"為什麼優秀人才應該選擇這個職位?", cls:"f-evp full", type:"p"}
+];
+
+const $ = id => document.getElementById(id);
+
+function esc(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function renderCard(role, title, skills){
+  $("cardTitle").textContent = title || role.name;
+  $("roleSel").value = role.id;
+  $("genericNote").classList.toggle("show", role.id === "generic");
+
+  const kwRow = $("kwRow");
+  if(skills.length){
+    kwRow.hidden = false;
+    $("kwChips").innerHTML = skills.map(k => `<span class="kw">${esc(k)}</span>`).join(" ");
+  }else{
+    kwRow.hidden = true;
+  }
+
+  const grid = $("grid");
+  grid.innerHTML = FIELDS.map(f => {
+    const v = role[f.key];
+    const body = f.type === "ul"
+      ? `<ul>${v.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`
+      : `<p>${esc(v)}</p>`;
+    const tag = f.tag ? `<span class="tag">${f.tag}</span>` : "";
+    return `<div class="fielded ${f.cls}" data-key="${f.key}">
+      <div class="num">${f.n}</div>
+      <h3>${f.title}${tag}</h3>
+      <p class="q">${f.q}</p>
+      <div class="body" contenteditable="true" spellcheck="false">${body}</div>
+    </div>`;
+  }).join("");
+
+  $("result").classList.add("show");
+}
+
+/* ================= 事件 ================= */
+let currentTitle = "";
+let currentSkills = [];
+
+function generate(){
+  const rawTitle = $("jobTitle").value.trim();
+  const desc = $("jobDesc").value.trim();
+
+  if(looksLikeUrl(rawTitle) || looksLikeUrl(desc)){
+    $("urlNote").classList.add("show");
+    if(looksLikeUrl(rawTitle) && !desc){ return; }
+  }else{
+    $("urlNote").classList.remove("show");
+  }
+
+  if(!rawTitle && !desc){
+    toast("請先輸入職缺名稱,或貼上職務內容");
+    return;
+  }
+
+  const role = matchRole(rawTitle, desc) || GENERIC;
+  currentTitle = (rawTitle && !looksLikeUrl(rawTitle)) ? rawTitle : role.name;
+  currentSkills = detectSkills(rawTitle + " " + desc);
+  renderCard(role, currentTitle, currentSkills);
+  $("result").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+$("genBtn").addEventListener("click", generate);
+$("jobTitle").addEventListener("keydown", e => { if(e.key === "Enter") generate(); });
+
+$("clearBtn").addEventListener("click", () => {
+  $("jobTitle").value = ""; $("jobDesc").value = "";
+  $("urlNote").classList.remove("show");
+  $("result").classList.remove("show");
+  $("jobTitle").focus();
+});
+
+/* 快速選擇 chips */
+$("quickChips").innerHTML = ROLES.map(r =>
+  `<button class="chip" type="button" data-id="${r.id}">${r.name}</button>`).join("");
+$("quickChips").addEventListener("click", e => {
+  const btn = e.target.closest("button.chip");
+  if(!btn) return;
+  const role = ROLES.find(r => r.id === btn.dataset.id);
+  $("jobTitle").value = role.name;
+  generate();
+});
+
+/* 範本切換 */
+const sel = $("roleSel");
+sel.innerHTML = ROLES.map(r => `<option value="${r.id}">${r.name}</option>`).join("")
+  + `<option value="generic">通用範本(自行填寫)</option>`;
+sel.addEventListener("change", () => {
+  const role = ROLES.find(r => r.id === sel.value) || GENERIC;
+  renderCard(role, currentTitle || role.name, currentSkills);
+});
+
+/* ================= 匯出 ================= */
+function cardToMarkdown(){
+  const title = $("cardTitle").textContent;
+  let md = `# 技術職缺成功輪廓卡:${title}\n\n`;
+  if(!$("kwRow").hidden){
+    const kws = [...document.querySelectorAll("#kwChips .kw")].map(k => k.textContent);
+    md += `> 偵測到的關鍵技能:${kws.join("、")}\n\n`;
+  }
+  md += `| 欄位 | 引導問題 | 內容 |\n|---|---|---|\n`;
+  for(const f of FIELDS){
+    const el = document.querySelector(`.fielded[data-key="${f.key}"] .body`);
+    const items = f.type === "ul"
+      ? [...el.querySelectorAll("li")].map(li => li.textContent.trim()).filter(Boolean)
+      : [el.textContent.trim()];
+    const content = items.map(x => x.replace(/\|/g,"／")).join("<br>");
+    md += `| **${f.title}** | ${f.q} | ${content} |\n`;
+  }
+  md += `\n---\n*由「技術職缺成功輪廓卡」工具產生之參考草稿,請依實際職務調整。*\n`;
+  return md;
+}
+
+function toast(msg){
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+$("printBtn").addEventListener("click", () => window.print());
+
+$("mdBtn").addEventListener("click", async () => {
+  const md = cardToMarkdown();
+  const fname = `成功輪廓卡_${$("cardTitle").textContent.replace(/[\\/:*?"<>|\s]+/g,"_")}.md`;
+  if(window.claude && window.claude.downloads){
+    try{
+      await window.claude.downloads.save({filename: fname, data: md});
+      toast("已下載 Markdown 檔");
+      return;
+    }catch(err){ /* 使用者取消或不支援時,退回瀏覽器下載 */ }
+  }
+  const blob = new Blob([md], {type:"text/markdown;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  toast("已下載 Markdown 檔");
+});
+
+$("copyBtn").addEventListener("click", async () => {
+  try{
+    await navigator.clipboard.writeText(cardToMarkdown());
+    toast("已複製全文,可貼到 Email 或會議紀錄");
+  }catch(err){
+    toast("複製失敗,請改用「下載 Markdown」");
+  }
+});
+</script>
+</body>
+</html>
