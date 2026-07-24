@@ -14,6 +14,9 @@
 - 貼 104 **網址**時會提示改貼「工作內容文字」(瀏覽器安全限制無法跨站抓取頁面)
 - 純前端單一 HTML,無後端、無外部套件;輸入不上傳、不儲存;支援深淺色主題
 
+**公開網址:<https://chuyc347-cmyk.github.io/AUO/profile-card/>**
+(由 `.github/workflows/deploy-profile-card.yml` 在推送本分支或 `main` 時自動部署到 `gh-pages`)
+
 ---
 
 # SMART 目標檢核網站
