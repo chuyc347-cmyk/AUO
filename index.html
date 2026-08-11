@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SMART 目標檢核|友達光電 目標設定與績效面談 課後工具</title>
-<meta name="description" content="友達光電主管訓練課後工具:將你或部屬草擬的績效目標貼上,依 SMART 原則逐項檢核並取得具體改善建議。">
+<title>人才風險地圖|友達光電 關鍵職位盤點 課後工具</title>
+<meta name="description" content="友達光電主管訓練課後工具:輸入部門、職位與「職位重要性 × 人才風險」分數,自動產生四象限人才風險地圖,以紅黃綠燈號辨識優先處理職位。">
 <style>
 :root{
   --brand:#005BAC;          /* AUO 品牌藍 */
@@ -23,33 +23,29 @@
   --warn-soft:#F6ECD6;
   --poor:#A93F36;
   --poor-soft:#F6E3E0;
+  --neutral:#78889A;
+  --neutral-soft:#EAEFF4;
   --track:#E7EDF3;
   --shadow:0 1px 2px rgba(23,36,49,.06),0 8px 24px rgba(23,36,49,.07);
 }
 @media (prefers-color-scheme: dark){
-  :root{
+  :root:not([data-theme="light"]){
     --brand:#2B7FD6;
     --paper:#0E141B; --card:#161E27; --ink:#E6EBF1; --ink-2:#A0AEBD; --ink-3:#7B8B9B;
     --line:#2A3745; --accent:#4D9EE8; --accent-ink:#7FB9F0; --accent-soft:#1A2A3B;
     --good:#5FBE8C; --good-soft:#1B2F24; --warn:#D9A441; --warn-soft:#332A17;
-    --poor:#E08078; --poor-soft:#35201E; --track:#232F3C;
+    --poor:#E08078; --poor-soft:#35201E; --neutral:#7B8B9B; --neutral-soft:#212B36;
+    --track:#232F3C;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
   }
-}
-:root[data-theme="light"]{
-  --brand:#005BAC;
-  --paper:#F3F6FA; --card:#FFFFFF; --ink:#1B2430; --ink-2:#4F5E6E; --ink-3:#78889A;
-  --line:#D9E1EA; --accent:#005BAC; --accent-ink:#004C8F; --accent-soft:#E3EEF8;
-  --good:#177245; --good-soft:#E1F0E6; --warn:#9A6A12; --warn-soft:#F6ECD6;
-  --poor:#A93F36; --poor-soft:#F6E3E0; --track:#E7EDF3;
-  --shadow:0 1px 2px rgba(23,36,49,.06),0 8px 24px rgba(23,36,49,.07);
 }
 :root[data-theme="dark"]{
   --brand:#2B7FD6;
   --paper:#0E141B; --card:#161E27; --ink:#E6EBF1; --ink-2:#A0AEBD; --ink-3:#7B8B9B;
   --line:#2A3745; --accent:#4D9EE8; --accent-ink:#7FB9F0; --accent-soft:#1A2A3B;
   --good:#5FBE8C; --good-soft:#1B2F24; --warn:#D9A441; --warn-soft:#332A17;
-  --poor:#E08078; --poor-soft:#35201E; --track:#232F3C;
+  --poor:#E08078; --poor-soft:#35201E; --neutral:#7B8B9B; --neutral-soft:#212B36;
+  --track:#232F3C;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
 }
 *{box-sizing:border-box}
@@ -59,17 +55,17 @@ body{
   font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;
   font-size:16px; line-height:1.75;
 }
-.wrap{max-width:860px; margin:0 auto; padding:0 20px}
+.wrap{max-width:960px; margin:0 auto; padding:0 20px}
 a{color:var(--accent-ink)}
 h1,h2,h3{font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif; line-height:1.3; text-wrap:balance; margin:0}
 button{font:inherit; cursor:pointer}
 :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition:none !important; animation:none !important}
+}
 
 /* ---------- brand bar ---------- */
-.brandbar{
-  display:flex; align-items:center; gap:12px;
-  padding:18px 20px 0;
-}
+.brandbar{display:flex; align-items:center; gap:12px; padding:18px 20px 0}
 .brand-mark{
   display:inline-flex; align-items:center; justify-content:center;
   background:var(--brand); color:#fff;
@@ -78,40 +74,53 @@ button{font:inherit; cursor:pointer}
 }
 .brand-name{font-weight:700; letter-spacing:.02em}
 .brand-name small{display:block; font-weight:400; font-size:.7rem; letter-spacing:.14em; color:var(--ink-3); text-transform:uppercase}
-.brandbar .course-tag{
-  margin-left:auto; color:var(--ink-3); font-size:.8rem; letter-spacing:.08em;
-  white-space:nowrap;
-}
+.brandbar .course-tag{margin-left:auto; color:var(--ink-3); font-size:.8rem; letter-spacing:.08em; white-space:nowrap}
 @media (max-width:560px){ .brandbar .course-tag{display:none} }
 
 /* ---------- header ---------- */
 .site-head{padding:40px 0 8px}
-.eyebrow{
-  font-size:.8rem; letter-spacing:.18em; color:var(--accent-ink);
-  text-transform:uppercase; margin:0 0 14px; font-weight:600;
-}
+.eyebrow{font-size:.8rem; letter-spacing:.18em; color:var(--accent-ink); text-transform:uppercase; margin:0 0 14px; font-weight:600}
 .site-head h1{font-size:2.3rem; font-weight:700}
-.lede{color:var(--ink-2); max-width:38em; margin:14px 0 0}
+.lede{color:var(--ink-2); max-width:40em; margin:14px 0 0}
 
 /* ---------- input card ---------- */
 .input-card{
   background:var(--card); border:1px solid var(--line); border-radius:14px;
   box-shadow:var(--shadow); padding:24px; margin:28px 0 0;
 }
-.input-card label{display:block; font-weight:600; margin-bottom:10px}
-.input-card label small{font-weight:400; color:var(--ink-3); margin-left:.5em}
-textarea{
-  width:100%; min-height:132px; resize:vertical;
+.field-label{display:block; font-weight:600; margin-bottom:8px}
+.field-label small{font-weight:400; color:var(--ink-3); margin-left:.5em}
+input[type="text"], input[type="number"]{
   background:var(--paper); color:var(--ink);
-  border:1px solid var(--line); border-radius:10px; padding:14px 16px;
-  font:inherit; line-height:1.7;
+  border:1px solid var(--line); border-radius:10px; padding:10px 14px;
+  font:inherit; width:100%;
 }
-textarea:focus{outline:2px solid var(--accent); outline-offset:0; border-color:transparent}
-.actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px}
-.btn{
-  border-radius:10px; padding:10px 20px; border:1px solid transparent;
-  font-weight:600; transition:filter .15s;
+input:focus{outline:2px solid var(--accent); outline-offset:0; border-color:transparent}
+#deptName{max-width:24em}
+.rows-head{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px; margin:24px 0 8px}
+.rows-head .hint{color:var(--ink-3); font-size:.85rem}
+
+.table-scroll{overflow-x:auto}
+table.entry{width:100%; border-collapse:collapse; min-width:560px}
+table.entry th{
+  text-align:left; font-size:.82rem; letter-spacing:.06em; color:var(--ink-3);
+  font-weight:600; padding:6px 10px 6px 0; border-bottom:1px solid var(--line);
+  white-space:nowrap;
 }
+table.entry th small{font-weight:400; letter-spacing:0}
+table.entry td{padding:8px 10px 0 0; vertical-align:top}
+table.entry td.num-col{width:9.5em}
+table.entry td.del-col{width:3em; padding-top:12px}
+.del-btn{
+  border:none; background:transparent; color:var(--ink-3);
+  font-size:1.1rem; line-height:1; padding:6px; border-radius:6px;
+}
+.del-btn:hover{color:var(--poor); background:var(--poor-soft)}
+.field-err{outline:2px solid var(--poor) !important}
+.err-msg{color:var(--poor); font-size:.85rem; margin:10px 0 0; display:none}
+
+.actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:20px}
+.btn{border-radius:10px; padding:10px 20px; border:1px solid transparent; font-weight:600; transition:filter .15s}
 .btn.primary{background:var(--accent); color:#fff}
 :root[data-theme="dark"] .btn.primary{color:#0B1420}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .btn.primary{color:#0B1420} }
@@ -120,188 +129,173 @@ textarea:focus{outline:2px solid var(--accent); outline-offset:0; border-color:t
 .btn.ghost:hover{background:var(--accent-soft)}
 .privacy{color:var(--ink-3); font-size:.85rem; margin:14px 0 0}
 
-/* ---------- results ---------- */
-#results{margin-top:36px}
-.result{
+/* ---------- result ---------- */
+#result{margin-top:36px; display:none}
+.chart-card{
   background:var(--card); border:1px solid var(--line); border-radius:14px;
-  box-shadow:var(--shadow); padding:26px 26px 22px; margin-bottom:26px;
+  box-shadow:var(--shadow); padding:26px; margin-bottom:26px;
 }
-.result-head{display:flex; gap:20px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap}
-.goal-quote{
-  flex:1 1 24em; margin:0; padding:2px 0 2px 16px;
-  border-left:3px solid var(--accent); color:var(--ink);
-  font-family:"Noto Serif TC",serif; font-size:1.05rem;
+.chart-head{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:6px}
+.chart-head h2{font-size:1.4rem}
+.chart-head .dept-tag{color:var(--ink-3); font-size:.9rem}
+.chart-box{position:relative; margin-top:10px}
+.chart-box svg{display:block; width:100%; height:auto}
+.tooltip{
+  position:absolute; pointer-events:none; z-index:5; display:none;
+  background:var(--card); border:1px solid var(--line); border-radius:10px;
+  box-shadow:var(--shadow); padding:10px 14px; font-size:.85rem; line-height:1.6;
+  max-width:240px;
 }
-.goal-quote .g-label{display:block; font-family:"Noto Sans TC","PingFang TC",sans-serif; font-size:.78rem; letter-spacing:.12em; color:var(--ink-3); margin-bottom:2px}
-.overall{text-align:right; flex:0 0 auto}
-.overall .num{
-  font-size:2.6rem; font-weight:700; line-height:1;
-  font-variant-numeric:tabular-nums; letter-spacing:-.02em;
-}
-.overall .denom{font-size:1rem; color:var(--ink-3); font-weight:400}
-.verdict{display:block; margin-top:8px}
+.tooltip .tt-name{font-weight:700}
+.tooltip .tt-quad{font-weight:600}
+.tooltip .tt-act{color:var(--ink-2)}
 
+/* legend */
+.legend{display:flex; flex-wrap:wrap; gap:8px 18px; margin:14px 0 0; font-size:.85rem; color:var(--ink-2)}
+.legend .key{display:inline-flex; align-items:center; gap:7px; white-space:nowrap}
+.legend .dot{width:11px; height:11px; border-radius:50%; flex:0 0 auto}
+.legend .dot.q-red{background:var(--poor)}
+.legend .dot.q-yellow{background:var(--warn)}
+.legend .dot.q-green{background:var(--good)}
+.legend .dot.q-gray{background:var(--neutral)}
+.legend-note{color:var(--ink-3); font-size:.8rem; margin:6px 0 0}
+
+/* ---------- summary table ---------- */
+.summary-card{
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+  box-shadow:var(--shadow); padding:26px;
+}
+.summary-card h2{font-size:1.4rem; margin-bottom:4px}
+.summary-card .sub{color:var(--ink-3); font-size:.85rem; margin:0 0 14px}
+table.summary{width:100%; border-collapse:collapse; min-width:640px}
+table.summary th{
+  text-align:left; font-size:.82rem; letter-spacing:.06em; color:var(--ink-3);
+  font-weight:600; padding:8px 12px 8px 0; border-bottom:1px solid var(--line); white-space:nowrap;
+}
+table.summary td{padding:10px 12px 10px 0; border-bottom:1px solid var(--line); vertical-align:top}
+table.summary td.score{font-variant-numeric:tabular-nums; white-space:nowrap}
+table.summary tr:last-child td{border-bottom:none}
 .pill{
   display:inline-flex; align-items:center; gap:6px;
-  border-radius:999px; padding:2px 12px; font-size:.82rem; font-weight:600;
-  white-space:nowrap;
+  border-radius:999px; padding:2px 12px; font-size:.82rem; font-weight:600; white-space:nowrap;
 }
 .pill::before{content:""; width:7px; height:7px; border-radius:50%; background:currentColor}
-.pill.good{background:var(--good-soft); color:var(--good)}
-.pill.warn{background:var(--warn-soft); color:var(--warn)}
-.pill.poor{background:var(--poor-soft); color:var(--poor)}
-
-.dims{list-style:none; margin:22px 0 0; padding:0; display:grid; gap:18px}
-.dim{
-  display:grid; grid-template-columns:44px 1fr; gap:14px;
-  padding-top:18px; border-top:1px solid var(--line);
-}
-.dim-badge{
-  width:44px; height:44px; border-radius:10px;
-  display:flex; align-items:center; justify-content:center;
-  background:var(--accent-soft); color:var(--accent-ink);
-  font-family:"Noto Serif TC",serif; font-size:1.5rem; font-weight:700;
-}
-.dim-top{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
-.dim-name{font-weight:700}
-.dim-name small{font-weight:400; color:var(--ink-3); letter-spacing:.04em}
-.dim-score{margin-left:auto; font-variant-numeric:tabular-nums; color:var(--ink-2); font-size:.9rem}
-.meter{height:8px; border-radius:4px; background:var(--track); margin:9px 0 10px; overflow:hidden}
-.meter > i{display:block; height:100%; border-radius:4px; transition:width .5s ease}
-@media (prefers-reduced-motion: reduce){ .meter > i{transition:none} }
-.meter.good > i{background:var(--good)}
-.meter.warn > i{background:var(--warn)}
-.meter.poor > i{background:var(--poor)}
-.evidence{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 8px}
-.chip{
-  font-size:.8rem; color:var(--ink-2); background:var(--paper);
-  border:1px solid var(--line); border-radius:6px; padding:1px 8px;
-}
-.chip b{color:var(--accent-ink); font-weight:600}
-.tips{margin:0; padding:0 0 0 1.2em; color:var(--ink-2); font-size:.93rem}
-.tips li{margin:4px 0}
-.tips li::marker{color:var(--accent)}
-
-.panel{
-  border:1px solid var(--line); border-radius:10px;
-  padding:16px 18px; margin-top:20px; background:var(--paper);
-}
-.panel h3{font-size:1rem; margin-bottom:8px}
-.panel h3 .tag{
-  font-family:"Noto Sans TC","PingFang TC",sans-serif; font-size:.72rem; font-weight:600;
-  letter-spacing:.14em; color:var(--accent-ink); display:block; margin-bottom:2px;
-}
-.rewrite-sentence{margin:0; font-size:1rem; line-height:2}
-.slot{
-  display:inline-block; border-bottom:2px solid var(--accent);
-  padding:0 2px; font-weight:600;
-}
-.slot.empty{color:var(--ink-3); font-weight:400; border-bottom-style:dashed; border-bottom-color:var(--ink-3)}
-.coach-list{margin:0; padding:0 0 0 1.2em; color:var(--ink-2); font-size:.95rem}
-.coach-list li{margin:5px 0}
-
-/* ---------- reference ---------- */
-.ref{margin:52px 0 0}
-.ref h2{font-size:1.4rem}
-.ref > p{color:var(--ink-2); margin:8px 0 20px}
-.ref-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px}
-.ref-card{
-  background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px;
-}
-.ref-card h3{font-size:1rem; display:flex; align-items:center; gap:10px}
-.ref-card h3 .dim-badge{width:32px; height:32px; font-size:1.1rem; border-radius:8px; flex:0 0 auto}
-.ref-card p{color:var(--ink-2); font-size:.9rem; margin:10px 0 0}
-.ref-card .ask{
-  margin:10px 0 0; padding:8px 12px; border-radius:8px;
-  background:var(--accent-soft); color:var(--accent-ink); font-size:.86rem;
-}
+.pill.q-red{background:var(--poor-soft); color:var(--poor)}
+.pill.q-yellow{background:var(--warn-soft); color:var(--warn)}
+.pill.q-green{background:var(--good-soft); color:var(--good)}
+.pill.q-gray{background:var(--neutral-soft); color:var(--neutral)}
+.action-cell{color:var(--ink-2); font-size:.92rem}
 
 /* ---------- footer ---------- */
-.site-foot{
-  margin:56px 0 0; padding:22px 0 44px; border-top:1px solid var(--line);
-  color:var(--ink-3); font-size:.85rem;
-}
-.site-foot p{margin:4px 0}
+.site-foot{padding:36px 0 44px; color:var(--ink-3); font-size:.85rem}
 
+/* ---------- print ---------- */
 @media print{
-  .input-card,.actions,.ref,.no-print{display:none !important}
   body{background:#fff; color:#000}
-  .result{box-shadow:none; break-inside:avoid}
-}
-@media (max-width:560px){
-  .site-head{padding-top:36px}
-  .site-head h1{font-size:1.8rem}
-  .result{padding:20px 18px}
-  .overall{text-align:left}
+  .brandbar,.site-head,.input-card,.actions,.site-foot,.no-print{display:none !important}
+  #result{display:block !important; margin-top:0}
+  .chart-card,.summary-card{box-shadow:none; border-color:#bbb; break-inside:avoid}
 }
 </style>
 </head>
 <body>
 
-<div class="brandbar wrap">
-  <span class="brand-mark" aria-hidden="true">AUO</span>
-  <span class="brand-name">友達光電<small>AUO Corporation</small></span>
-  <span class="course-tag">主管訓練</span>
-</div>
-
-<header class="site-head wrap">
-  <p class="eyebrow">目標設定與績效面談 · 課後練習工具</p>
-  <h1>SMART 目標檢核</h1>
-  <p class="lede">把你草擬的績效目標,或部屬提交的目標草稿貼上來,系統會依 SMART 原則逐項檢核,標示已具備與待補強之處,並給出改寫句型與面談提問建議,作為正式目標設定前的參考。</p>
+<header class="brandbar">
+  <span class="brand-mark">AUO</span>
+  <span class="brand-name">友達光電<small>Talent Risk Map</small></span>
+  <span class="course-tag">關鍵職位盤點|課後練習工具</span>
 </header>
 
-<main class="wrap">
-  <section class="input-card" aria-label="目標輸入">
-    <label for="goal-input">目標草稿 <small>一行一條,可一次貼多條</small></label>
-    <textarea id="goal-input" placeholder="例:在 2026 年 Q4 底前,將產線 A 直通率由 91% 提升至 96%,以支持廠區年度良率目標。"></textarea>
-    <div class="actions">
-      <button class="btn primary" id="btn-check">檢核目標</button>
-      <button class="btn ghost" id="btn-demo-bad">待改善範例參考</button>
-      <button class="btn ghost" id="btn-demo-good">優良範例參考</button>
-      <button class="btn ghost" id="btn-clear">清除</button>
-    </div>
-    <p class="privacy">所有分析都在你的瀏覽器內完成,目標內容不會上傳、不會被儲存。</p>
-  </section>
+<div class="wrap">
 
-  <section id="results" aria-live="polite"></section>
+<section class="site-head">
+  <p class="eyebrow">Talent Risk Map</p>
+  <h1>人才風險地圖產生器</h1>
+  <p class="lede">
+    輸入部門名稱與各職位的「職位重要性」(X 軸) 與「人才風險」(Y 軸) 分數,
+    即可產生該部門的四象限人才風險地圖:<strong>紅色=高風險(最危險區)</strong>、
+    <strong>黃色=中風險(可觀察)</strong>、<strong>綠色=低風險(穩定區)</strong>,
+    灰色為一般區,協助你快速看出哪些職位最需要優先處理。
+  </p>
+</section>
 
-  <section class="ref" id="smart-ref">
-    <h2>SMART 五構面速查</h2>
-    <p>設定目標或與部屬面談時,可用每張卡片下方的問句自我檢核。</p>
-    <div class="ref-grid">
-      <div class="ref-card">
-        <h3><span class="dim-badge">S</span>明確的 Specific</h3>
-        <p>寫清楚要「做什麼、做到什麼程度、範圍在哪」,避免只有方向沒有內容的字眼,例如「提升」「加強」「優化」。</p>
-        <p class="ask">問自己:目標達成時,別人會看到什麼具體的改變或產出?</p>
-      </div>
-      <div class="ref-card">
-        <h3><span class="dim-badge">M</span>可衡量的 Measurable</h3>
-        <p>要有數字或可驗收的證據:指標名稱、現況值、目標值;質化目標則明訂交付物與驗收標準。</p>
-        <p class="ask">問自己:我們要用哪個數字或證據,判斷目標達成了沒有?</p>
-      </div>
-      <div class="ref-card">
-        <h3><span class="dim-badge">A</span>可達成的 Attainable</h3>
-        <p>具挑戰性但做得到:盤點現況、資源、能力與方法,必要時分階段推進。</p>
-        <p class="ask">問自己:以現有資源與工作量,達成把握有幾成?需要哪些支援?</p>
-      </div>
-      <div class="ref-card">
-        <h3><span class="dim-badge">R</span>具相關性 Relevant</h3>
-        <p>目標要接得上部門與公司的重點方向,說得出「為什麼是這個目標、為什麼是現在」。</p>
-        <p class="ask">問自己:這個目標支持部門今年的哪一項重點?</p>
-      </div>
-      <div class="ref-card">
-        <h3><span class="dim-badge">T</span>有時間性 Time Bound</h3>
-        <p>訂出完成期限與中間檢核點;例行性工作則明訂頻率與每期水準。</p>
-        <p class="ask">問自己:什麼時候完成?中間在哪些時點檢視進度?</p>
-      </div>
+<section class="input-card" aria-label="輸入區">
+  <label class="field-label" for="deptName">部門名稱</label>
+  <input type="text" id="deptName" placeholder="例:HW Center" autocomplete="off">
+
+  <div class="rows-head">
+    <span class="field-label" style="margin:0">職位清單</span>
+    <span class="hint">X 軸來自步驟一「職位重要性」;Y 軸=步驟二 Risk × 接班風險。15 分(含)以上視為「高」。</span>
+  </div>
+
+  <div class="table-scroll">
+    <table class="entry" aria-label="職位輸入表">
+      <thead>
+        <tr>
+          <th>職位名稱</th>
+          <th>職位重要性 <small>(X,5~25)</small></th>
+          <th>人才風險 <small>(Y,5~25)</small></th>
+          <th><span class="sr-only">刪除</span></th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <p class="err-msg" id="errMsg"></p>
+
+  <div class="actions">
+    <button class="btn primary" id="drawBtn">產生人才風險地圖</button>
+    <button class="btn ghost" id="addRowBtn">+ 新增職位</button>
+    <button class="btn ghost" id="sampleBtn">載入範例(HW Center)</button>
+    <button class="btn ghost" id="clearBtn">清除重填</button>
+  </div>
+  <p class="privacy">所有計算皆在瀏覽器內完成,輸入內容不上傳、不儲存。</p>
+</section>
+
+<section id="result" aria-live="polite">
+  <div class="chart-card">
+    <div class="chart-head">
+      <h2>人才風險地圖</h2>
+      <span class="dept-tag" id="deptTag"></span>
     </div>
-  </section>
-</main>
+    <div class="chart-box" id="chartBox">
+      <div class="tooltip" id="tooltip"></div>
+    </div>
+    <div class="legend" aria-hidden="false">
+      <span class="key"><span class="dot q-red"></span>紅色=高風險 最危險區(高重要 × 高風險)</span>
+      <span class="key"><span class="dot q-yellow"></span>黃色=中風險 可觀察(低重要 × 高風險)</span>
+      <span class="key"><span class="dot q-green"></span>綠色=低風險 穩定區(高重要 × 低風險)</span>
+      <span class="key"><span class="dot q-gray"></span>灰色 一般區(低重要 × 低風險)</span>
+    </div>
+    <p class="legend-note">象限分界:兩軸皆以 15 分為界,15 分(含)以上視為「高」。將滑鼠移到圓點上可查看各職位明細。</p>
+    <div class="actions no-print">
+      <button class="btn ghost" id="pngBtn">下載 PNG 圖檔</button>
+      <button class="btn ghost" id="printBtn">列印/存成 PDF</button>
+    </div>
+  </div>
+
+  <div class="summary-card">
+    <h2>職位風險摘要</h2>
+    <p class="sub" id="summarySub"></p>
+    <div class="table-scroll">
+      <table class="summary" id="summaryTable">
+        <thead>
+          <tr>
+            <th>優先序</th><th>職位名稱</th><th>職位重要性 (X)</th><th>人才風險 (Y)</th><th>象限</th><th>建議行動</th>
+          </tr>
+        </thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
 
 <footer class="site-foot">
   <div class="wrap">
-    <p>本工具為友達光電主管訓練「目標設定與績效面談」課程之課後練習輔助,檢核採關鍵字規則判斷,結果僅供草稿參考。</p>
-    <p>目標的可達成性與相關性,仍需主管與部屬在面談中對話確認 — 工具不能取代對話。</p>
+    分數僅反映填入當下的盤點判斷;象限與建議行動供主管討論參考,實際留才與接班安排請與 HR 共同確認。
   </div>
 </footer>
 
@@ -309,332 +303,342 @@ textarea:focus{outline:2px solid var(--accent); outline-offset:0; border-color:t
 (function(){
 "use strict";
 
-/* ============ 檢核規則 ============ */
-
-var RE = {
-  /* 時間 */
-  deadline: /(20\d{2}\s*年(\s*\d{1,2}\s*月)?(底|前|初)?|Q\s*[1-4]|第\s*[一二三四1-4]\s*季(度)?|[上下]半年|年底前?|年中|本季|全年度?|年度內|(\d{1,2}|[一二三四五六七八九十]{1,3})\s*月(底|前|中旬|下旬|初)|\d{1,2}\s*[日號](以?前)?|\d{1,2}\s*\/\s*\d{1,2}|(週|周|季|年)底前?)/g,
-  before: /(底前|之前|以前|前完成|前達成|內完成|內達成|為止|以内|以內)/,
-  duration: /(\d{1,3}|[一二三四五六七八九十]{1,3})\s*(個月|週|周|天|日|季|年)\s*內/g,
-  recurring: /每\s*(日|天|週|周|雙週|月|季|半年|年)/g,
-
-  /* 量化 */
-  percent: /\d+(\.\d+)?\s*(%|％|個百分點|ppm|PPM|dppm|DPPM)|百分之\s*[\d一二三四五六七八九十點.]+/g,
-  numUnit: /\d+(\.\d+)?\s*(件|次|人(?:次)?|家|場|台|部|款|篇|筆|案|項|批|張|份|堂|名|位|元|萬|億|倍|分貝|小時|循環|站)/g,
-  money: /(NT\$|NTD|US\$|USD|\$)\s*[\d,]+|[\d,]+(\.\d+)?\s*(元|萬元|億元|百萬|千萬)/g,
-  metric: /(達成率|良率|稼動率|直通率|不良率|報廢率|退貨率|離職率|留任率|準時率|準交率|出勤率|交期|週期時間|前置時間|工時|產能|產出|營收|營業額|銷售額|毛利|利潤|成本|費用|市佔率|市占率|滿意度|敬業度|NPS|eNPS|客訴|抱怨件數|點擊率|轉換率|使用率|覆蓋率|完成率|通過率|合格率|錯誤率|失誤率|OEE|UPH|FPY|CPK|Cpk|KPI|分數|名次|排名|評分|評鑑|績效等第)/g,
-  baselineTarget: /(由|從)[^,,。;;]{1,24}?(提升|提高|增加|成長|拉高|降低|減少|下降|縮短|壓低|改善)[^,,。;;]{0,16}?(至|到)/,
-  changeTo: /(提升|提高|增加|成長|拉高|降低|減少|下降|縮短|壓低)\s*(至|到)\s*[\d一二三四五六七八九十]/,
-
-  /* 具體性 */
-  actionVerb: /(完成|建立|建置|導入|開發|設計並|推出|發布|上線|交付|產出|簽署|簽訂|取得|通過|辦理|舉辦|召開|執行|招募|培訓|訓練|授證|認證|制定|訂定|修訂|改版|彙整|盤點|實施|驗證|量產|移轉|整併|整合|自動化|標準化|數位化|優化並上線|汰換|部署|提交|提報|呈報|發表)/g,
-  deliverable: /(系統|報告|月報|週報|周報|報表|簡報|方案|流程|SOP|sop|平台|課程|教材|專案|產品|制度|模組|機制|標準書?|手冊|計畫書?|儀表板|看板|資料庫|模型|提案|範本|表單|清單|checklist|藍圖|新產線|治具|設備)/g,
-  vagueVerb: /(提升|提高|加強|優化|改善|強化|精進|深化|落實|推動|促進|維持|確保)/g,
-  vagueWord: /(盡量|儘量|盡快|儘快|盡力|更好|有效(?!率)|大幅|明顯|相關(?!部門|單位)|若干|適時|適度|積極|妥善|順利|良好|進一步|一定程度|持續(?!性))/g,
-
-  /* 可達成 */
-  method: /(透過|藉由|運用|利用|導入|結合|採用|依據|參照|比照|與[^,,。;;]{1,14}(合作|協作)|分階段|分[一二三四五六七八九十\d]+(階段|梯次|波))/g,
-  baseline: /(目前|現況|現行|現有|既有|原本|去年(同期)?|今年迄今|基期|歷年|上季|上月|上一?年度)/g,
-
-  /* 相關性 */
-  alignStrong: /(公司|集團|事業群|BU|策略|政策|方針|品質政策|上位目標|年度(目標|計畫|重點)|[^,,。;;\s]{0,6}目標)/g,
-  alignUnit: /(部門|處級|廠區?|單位|團隊|組織|客戶|市場)/g,
-  purpose: /(以支持|以達成|以利|以確保|以提升|以降低|以符合|以回應|藉此|進而|從而|為了|為達成|有助於|確保)/g
+/* ---------- quadrant definitions ---------- */
+var MID = 15, MAXV = 25;
+var QUAD = {
+  red:    { name:"最危險區", risk:"高風險", cls:"q-red",    order:1,
+            action:"優先處理:接班人、備援、知識移轉、留才" },
+  yellow: { name:"可觀察",   risk:"中風險", cls:"q-yellow", order:2,
+            action:"視情況處理:不一定馬上投入資源,但要降低單點依賴" },
+  green:  { name:"穩定區",   risk:"低風險", cls:"q-green",  order:3,
+            action:"持續培養與保護" },
+  gray:   { name:"一般區",   risk:"—",     cls:"q-gray",   order:4,
+            action:"Routine 管理" }
 };
-
-function matches(text, re){
-  var m = text.match(re);
-  if(!m) return [];
-  var seen = {}, out = [];
-  for(var i=0;i<m.length;i++){
-    var t = m[i].trim();
-    if(t && !seen[t]){ seen[t]=1; out.push(t); }
-  }
-  return out;
+function quadOf(x,y){
+  if(x>=MID && y>=MID) return "red";
+  if(x<MID  && y>=MID) return "yellow";
+  if(x>=MID && y<MID)  return "green";
+  return "gray";
 }
-function clamp(n){ return Math.max(0, Math.min(100, Math.round(n))); }
-
-/* 移除時間相關片段,避免日期數字被誤判為衡量數字 */
-function stripTime(text){
-  return text.replace(RE.deadline,"〔期〕").replace(RE.duration,"〔期〕").replace(RE.recurring,"〔期〕");
+function cssColor(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
-
-function levelOf(score){
-  if(score >= 75) return {key:"good", label:"良好"};
-  if(score >= 45) return {key:"warn", label:"部分符合"};
-  return {key:"poor", label:"待加強"};
+function quadFill(key){
+  return { red:cssColor("--poor"), yellow:cssColor("--warn"),
+           green:cssColor("--good"), gray:cssColor("--neutral") }[key];
+}
+function quadSoft(key){
+  return { red:cssColor("--poor-soft"), yellow:cssColor("--warn-soft"),
+           green:cssColor("--good-soft"), gray:cssColor("--neutral-soft") }[key];
 }
 
-/* ---------- S 具體 ---------- */
-function evalS(text){
-  var ev = [], tips = [], score = 10;
-  var acts = matches(text, RE.actionVerb);
-  var dels = matches(text, RE.deliverable);
-  var vagueV = matches(text, RE.vagueVerb);
-  var vagueW = matches(text, RE.vagueWord);
-  var hasNumber = /\d/.test(stripTime(text));
-
-  var quantified = RE.baselineTarget.test(text) || RE.changeTo.test(text) || matches(stripTime(text), RE.percent).length > 0;
-  if(acts.length){ score += 32; ev.push({label:"行動動詞", items:acts}); }
-  if(dels.length){ score += 22; ev.push({label:"具體產出", items:dels}); }
-  if(quantified){ score += 20; ev.push({label:"程度明確", items:["以數字界定做到什麼程度"]}); }
-  if(text.replace(/\s/g,"").length >= 15) score += 14;
-  else tips.push("目標敘述偏短,建議補上「做什麼、範圍、做到什麼程度」三個要素。");
-
-  if(vagueV.length && !acts.length && !hasNumber){
-    score -= 18;
-    tips.push("「" + vagueV.join("、") + "」屬於方向性字眼,請接上具體對象與程度,例如把「提升效率」改為「將報表產出時間由 3 天縮短至 1 天」。");
-  } else if(vagueV.length && !hasNumber){
-    tips.push("「" + vagueV.join("、") + "」等字眼建議搭配具體程度或數字,避免各自解讀。");
-  }
-  if(vagueW.length){
-    score -= Math.min(24, vagueW.length * 8);
-    tips.push("模糊修飾詞:「" + vagueW.join("、") + "」— 這類詞每個人的標準不同,建議刪除或改為明確的標準。");
-  }
-  if(!acts.length && !dels.length){
-    tips.push("看不出具體要「做出什麼」。建議點名交付物或改變,例如:完成○○系統上線、將○○率提升至○%。");
-  }
-  if(!tips.length) tips.push("敘述已相當具體,面談時可再確認範圍邊界(涵蓋哪些產線/客戶/單位)。");
-  return { score: clamp(score), evidence: ev, tips: tips };
+/* ---------- input rows ---------- */
+var rowsEl = document.getElementById("rows");
+function addRow(name,x,y){
+  var tr = document.createElement("tr");
+  tr.innerHTML =
+    '<td><input type="text" class="in-name" placeholder="例:RF Architect" autocomplete="off"></td>'+
+    '<td class="num-col"><input type="number" class="in-x" min="1" max="25" step="1" inputmode="numeric" placeholder="5~25"></td>'+
+    '<td class="num-col"><input type="number" class="in-y" min="1" max="25" step="1" inputmode="numeric" placeholder="5~25"></td>'+
+    '<td class="del-col"><button type="button" class="del-btn" aria-label="刪除此列" title="刪除此列">✕</button></td>';
+  tr.querySelector(".in-name").value = name || "";
+  if(x != null) tr.querySelector(".in-x").value = x;
+  if(y != null) tr.querySelector(".in-y").value = y;
+  tr.querySelector(".del-btn").addEventListener("click", function(){
+    if(rowsEl.rows.length > 1) tr.remove();
+    else { tr.querySelectorAll("input").forEach(function(i){ i.value=""; }); }
+  });
+  rowsEl.appendChild(tr);
+}
+function clearRows(n){
+  rowsEl.innerHTML = "";
+  for(var i=0;i<n;i++) addRow();
 }
 
-/* ---------- M 可衡量 ---------- */
-function evalM(text){
-  var ev = [], tips = [], score = 8;
-  var tless = stripTime(text);
-  var pct = matches(tless, RE.percent);
-  var units = matches(tless, RE.numUnit);
-  var money = matches(tless, RE.money);
-  var mets = matches(text, RE.metric);
-  var hasBT = RE.baselineTarget.test(text) || RE.changeTo.test(text);
-  var milestone = matches(text, RE.actionVerb).length > 0 && matches(text, RE.deliverable).length > 0;
+/* ---------- read & validate ---------- */
+var errEl = document.getElementById("errMsg");
+function readData(){
+  errEl.style.display = "none";
+  document.querySelectorAll(".field-err").forEach(function(el){ el.classList.remove("field-err"); });
+  var items = [], errs = [];
+  Array.prototype.forEach.call(rowsEl.rows, function(tr, idx){
+    var nameIn = tr.querySelector(".in-name"),
+        xIn = tr.querySelector(".in-x"),
+        yIn = tr.querySelector(".in-y");
+    var name = nameIn.value.trim(), xs = xIn.value.trim(), ys = yIn.value.trim();
+    if(!name && !xs && !ys) return;               /* fully empty row: skip */
+    var x = parseFloat(xs), y = parseFloat(ys), bad = false;
+    if(!name){ nameIn.classList.add("field-err"); bad = true; }
+    if(!(x>=1 && x<=25)){ xIn.classList.add("field-err"); bad = true; }
+    if(!(y>=1 && y<=25)){ yIn.classList.add("field-err"); bad = true; }
+    if(bad){ errs.push("第 "+(idx+1)+" 列"); return; }
+    items.push({ name:name, x:x, y:y, quad:quadOf(x,y) });
+  });
+  if(errs.length){
+    errEl.textContent = "請確認 "+errs.join("、")+":職位名稱不可空白,分數需為 1~25 之間的數字(標準區間 5~25)。";
+    errEl.style.display = "block";
+    return null;
+  }
+  if(!items.length){
+    errEl.textContent = "請至少填入一個職位(職位名稱 + 兩個分數)。";
+    errEl.style.display = "block";
+    return null;
+  }
+  return items;
+}
 
-  if(pct.length){ score += 30; ev.push({label:"比率/百分比", items:pct}); }
-  if(money.length){ score += 24; ev.push({label:"金額", items:money}); }
-  if(units.length){ score += 20; ev.push({label:"數量", items:units}); }
-  if(mets.length){ score += 24; ev.push({label:"指標名稱", items:mets}); }
-  if(hasBT){ score += 20; ev.push({label:"現況→目標", items:["有「由…提升/降低至…」結構"]}); }
-  else if(pct.length || units.length || money.length){
-    tips.push("已有目標值,建議補上「現況值」形成「由 A 提升/降低至 B」,進步幅度一目了然。");
+/* ---------- chart ---------- */
+var SVGNS = "http://www.w3.org/2000/svg";
+var chartBox = document.getElementById("chartBox");
+var tooltip = document.getElementById("tooltip");
+var W = 860, H = 620,
+    M = { l:96, r:36, t:44, b:84 },
+    PW = W - M.l - M.r, PH = H - M.t - M.b;
+function sx(v){ return M.l + (v / MAXV) * PW; }
+function sy(v){ return M.t + PH - (v / MAXV) * PH; }
+
+function el(tag, attrs, text){
+  var n = document.createElementNS(SVGNS, tag);
+  for(var k in attrs) n.setAttribute(k, attrs[k]);
+  if(text != null) n.textContent = text;
+  return n;
+}
+
+function drawChart(items, dept){
+  var old = chartBox.querySelector("svg");
+  if(old) old.remove();
+
+  var svg = el("svg", { viewBox:"0 0 "+W+" "+H, role:"img",
+    "aria-label":(dept?dept+" ":"")+"人才風險地圖:X 軸職位重要性,Y 軸人才風險,各職位以顏色標示風險象限" });
+  var ink = cssColor("--ink"), ink2 = cssColor("--ink-2"), ink3 = cssColor("--ink-3"),
+      line = cssColor("--line"), card = cssColor("--card");
+  svg.style.font = '13px "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
+
+  /* quadrant background tints */
+  var mx = sx(MID), my = sy(MID);
+  svg.appendChild(el("rect",{x:M.l, y:M.t, width:mx-M.l, height:my-M.t, fill:quadSoft("yellow"), opacity:.45}));
+  svg.appendChild(el("rect",{x:mx, y:M.t, width:M.l+PW-mx, height:my-M.t, fill:quadSoft("red"), opacity:.45}));
+  svg.appendChild(el("rect",{x:M.l, y:my, width:mx-M.l, height:M.t+PH-my, fill:quadSoft("gray"), opacity:.45}));
+  svg.appendChild(el("rect",{x:mx, y:my, width:M.l+PW-mx, height:M.t+PH-my, fill:quadSoft("green"), opacity:.45}));
+
+  /* grid every 5 */
+  for(var g=5; g<=25; g+=5){
+    svg.appendChild(el("line",{x1:sx(g), y1:M.t, x2:sx(g), y2:M.t+PH, stroke:line, "stroke-width":1}));
+    svg.appendChild(el("line",{x1:M.l, y1:sy(g), x2:M.l+PW, y2:sy(g), stroke:line, "stroke-width":1}));
+    svg.appendChild(el("text",{x:sx(g), y:M.t+PH+22, "text-anchor":"middle", fill:ink3}, g));
+    svg.appendChild(el("text",{x:M.l-12, y:sy(g)+4, "text-anchor":"end", fill:ink3}, g));
   }
 
-  if(!pct.length && !units.length && !money.length && !mets.length){
-    if(milestone){
-      score += 32;
-      ev.push({label:"里程碑型目標", items:["以「完成/上線/取得」驗收"]});
-      tips.push("屬里程碑型(質化)目標:請明訂「完成」的驗收標準 — 由誰驗收、包含哪些範圍、品質標準為何。");
-    } else {
-      tips.push("找不到任何數字、指標或可驗收的交付物。請補上指標名稱與目標值,或明訂交付物與驗收標準。");
+  /* mid dividers at 15 */
+  svg.appendChild(el("line",{x1:mx, y1:M.t, x2:mx, y2:M.t+PH, stroke:ink2, "stroke-width":1.5, "stroke-dasharray":"6 5"}));
+  svg.appendChild(el("line",{x1:M.l, y1:my, x2:M.l+PW, y2:my, stroke:ink2, "stroke-width":1.5, "stroke-dasharray":"6 5"}));
+
+  /* frame */
+  svg.appendChild(el("rect",{x:M.l, y:M.t, width:PW, height:PH, fill:"none", stroke:ink3, "stroke-width":1.25}));
+
+  /* axis titles */
+  svg.appendChild(el("text",{x:M.l+PW/2, y:H-30, "text-anchor":"middle", fill:ink,
+    "font-weight":"600", "font-size":"15"}, "職位重要性(低 ←→ 高)"));
+  var yT = el("text",{x:30, y:M.t+PH/2, "text-anchor":"middle", fill:ink,
+    "font-weight":"600", "font-size":"15",
+    transform:"rotate(-90 30 "+(M.t+PH/2)+")"}, "人才風險(低 ←→ 高)");
+  svg.appendChild(yT);
+
+  /* quadrant corner labels */
+  function corner(x,y,anchor,key,desc){
+    var t = el("text",{x:x, y:y, "text-anchor":anchor, fill:quadFill(key), "font-weight":"700", "font-size":"14"}, QUAD[key].name);
+    svg.appendChild(t);
+    svg.appendChild(el("text",{x:x, y:y+18, "text-anchor":anchor, fill:ink3, "font-size":"12"}, desc));
+  }
+  corner(M.l+14,    M.t+24, "start", "yellow", "低重要 × 高風險");
+  corner(M.l+PW-14, M.t+24, "end",   "red",    "高重要 × 高風險");
+  corner(M.l+14,    M.t+PH-26, "start", "gray",  "低重要 × 低風險");
+  corner(M.l+PW-14, M.t+PH-26, "end",   "green", "高重要 × 低風險");
+
+  /* spread points that share identical coordinates */
+  var groups = {};
+  items.forEach(function(d){
+    var k = d.x+"_"+d.y;
+    (groups[k] = groups[k] || []).push(d);
+  });
+  var pts = [];
+  Object.keys(groups).forEach(function(k){
+    var g = groups[k];
+    g.forEach(function(d,i){
+      var off = (i - (g.length-1)/2) * 20;
+      pts.push({ d:d, cx:sx(d.x)+off, cy:sy(d.y) });
+    });
+  });
+
+  /* label placement: above by default, flip below near top edge; stagger when close */
+  pts.sort(function(a,b){ return a.cx-b.cx || a.cy-b.cy; });
+  var placed = [];
+  /* reserve the four quadrant corner captions so point labels avoid them */
+  [ {x:M.l+14, a:"start", y:M.t+24}, {x:M.l+PW-14, a:"end", y:M.t+24},
+    {x:M.l+14, a:"start", y:M.t+PH-26}, {x:M.l+PW-14, a:"end", y:M.t+PH-26}
+  ].forEach(function(c){
+    var w = 130, cx = c.a==="start" ? c.x+w/2 : c.x-w/2;
+    placed.push({x:cx, y:c.y, w:w});
+    placed.push({x:cx, y:c.y+18, w:w});
+  });
+  function collides(bx){
+    return placed.some(function(p){
+      return Math.abs(p.x-bx.x) < (p.w+bx.w)/2 && Math.abs(p.y-bx.y) < 18;
+    });
+  }
+  pts.forEach(function(p){
+    var w = Math.max(40, p.d.name.length*13.5);
+    var cands = [
+      {x:p.cx, y:p.cy-18}, {x:p.cx, y:p.cy+26},
+      {x:p.cx+w/2+16, y:p.cy+4}, {x:p.cx-w/2-16, y:p.cy+4}
+    ];
+    var pick = cands[0];
+    for(var i=0;i<cands.length;i++){
+      var c = {x:cands[i].x, y:cands[i].y, w:w};
+      if(cands[i].y < M.t+12 || cands[i].y > M.t+PH-4) continue;
+      if(!collides(c)){ pick = cands[i]; break; }
     }
-  }
-  if(!tips.length) tips.push("衡量方式明確;面談時再確認數據來源與計算口徑,雙方認知一致。");
-  return { score: clamp(score), evidence: ev, tips: tips };
-}
-
-/* ---------- A 可達成 ---------- */
-function evalA(text){
-  var ev = [], tips = [], score = 22;
-  var methods = matches(text, RE.method);
-  var bases = matches(text, RE.baseline);
-  if(!bases.length && RE.baselineTarget.test(text)) bases = ["「由…至…」中的現況值"];
-
-  if(methods.length){ score += 36; ev.push({label:"方法/作法", items:methods}); }
-  if(bases.length){ score += 22; ev.push({label:"現況/基期", items:bases}); }
-  if(/分階段|分[一二三四五六七八九十\d]+(階段|梯次|波)/.test(text)){ score += 10; }
-
-  if(!methods.length){
-    tips.push("目標中看不出「怎麼做」。補上主要作法(透過○○、導入○○、與○○合作),能大幅提高說服力與可行性。");
-  }
-  if(!bases.length){
-    tips.push("建議註明現況或基期數據,讓挑戰幅度有依據,也方便期中檢視進步。");
-  }
-  tips.push("可達成性需人為判斷 — 面談時確認:資源與工時是否足夠?挑戰幅度是「跳一下搆得到」還是遙不可及?");
-  return { score: clamp(score), evidence: ev, tips: tips };
-}
-
-/* ---------- R 相關 ---------- */
-function evalR(text){
-  var ev = [], tips = [], score = 18;
-  var strong = matches(text, RE.alignStrong);
-  var units = matches(text, RE.alignUnit);
-  var purposes = matches(text, RE.purpose);
-
-  if(strong.length){ score += 30; ev.push({label:"對齊的重點/目標", items:strong}); }
-  if(units.length){ score += 14; ev.push({label:"涉及單位/對象", items:units}); }
-  if(purposes.length){ score += 24; ev.push({label:"目的連接詞", items:purposes}); }
-
-  if(!strong.length && !purposes.length){
-    tips.push("看不出這個目標「為了什麼」。建議句尾補上「以支持○○部門年度目標/公司○○策略」,說明與上位目標的關聯。");
-  } else if(!strong.length){
-    tips.push("建議點名要支持的上位目標或重點(部門年度目標、公司策略),讓關聯更明確。");
-  }
-  tips.push("相關性需對照組織重點 — 面談時確認:這是今年最值得投入的事嗎?與部門目標的權重關係為何?");
-  return { score: clamp(score), evidence: ev, tips: tips };
-}
-
-/* ---------- T 有時限 ---------- */
-function evalT(text){
-  var ev = [], tips = [], score = 8;
-  var dls = matches(text, RE.deadline);
-  var durs = matches(text, RE.duration);
-  var recs = matches(text, RE.recurring);
-
-  if(dls.length){ score += 48; ev.push({label:"期限", items:dls}); }
-  if(durs.length){ score += 42; ev.push({label:"期間", items:durs}); }
-  if(RE.before.test(text)) score += 12;
-  if(recs.length){
-    score += 34; ev.push({label:"頻率", items:recs});
-    if(!dls.length) tips.push("屬例行性目標:除了頻率,建議補上適用期間(例如「2026 全年度,每月…」)與每期應達水準。");
-  }
-  if(!dls.length && !durs.length && !recs.length){
-    tips.push("沒有找到完成期限。請補上明確時點(例如「2026 年 Q4 底前」「9 月底前」),沒有期限的目標很難追蹤。");
-  } else {
-    tips.push("建議再設定 1–2 個期中檢核點(例如每季檢視),進度落後時才來得及調整。");
-  }
-  return { score: clamp(score), evidence: ev, tips: tips };
-}
-
-/* ---------- 整體 ---------- */
-var DIMS = [
-  { key:"S", name:"明確的", en:"Specific",   fn:evalS },
-  { key:"M", name:"可衡量的", en:"Measurable", fn:evalM },
-  { key:"A", name:"可達成的", en:"Attainable", fn:evalA },
-  { key:"R", name:"具相關性", en:"Relevant",   fn:evalR },
-  { key:"T", name:"有時間性", en:"Time Bound", fn:evalT }
-];
-
-var COACH = {
-  S: "如果這個目標達成了,別人會看到什麼具體的改變或產出?",
-  M: "我們要用哪一個數字或證據,來判斷這個目標達成了沒有?現況值是多少?",
-  A: "以目前的資源和工作量,你達成的把握有幾成?需要我提供哪些支援?",
-  R: "這個目標支持部門今年的哪一項重點?為什麼是現在做?",
-  T: "什麼時候要完成?中間我們在哪些時點一起檢視進度?"
-};
-
-function evaluateGoal(text){
-  var results = DIMS.map(function(d){
-    var r = d.fn(text);
-    r.key = d.key; r.name = d.name; r.en = d.en;
-    r.level = levelOf(r.score);
-    return r;
+    placed.push({x:pick.x, y:pick.y, w:w});
+    p.lx = pick.x; p.ly = pick.y;
   });
-  var total = Math.round(results.reduce(function(s,r){ return s + r.score; }, 0) / results.length);
-  var verdict;
-  if(total >= 78) verdict = {key:"good", label:"已可作為正式目標草稿"};
-  else if(total >= 55) verdict = {key:"warn", label:"已具雛形,建議補強"};
-  else verdict = {key:"poor", label:"建議依提示改寫後再檢核"};
-  return { text:text, dims:results, total:total, verdict:verdict };
-}
 
-/* ---------- 改寫句型 ---------- */
-function buildRewrite(text, dims){
-  function found(re){ var m = text.match(re); return m ? m[0].trim() : null; }
-  var dl = found(RE.deadline) || found(RE.duration);
-  var method = found(RE.method);
-  var metric = found(RE.metric);
-  var tless = stripTime(text);
-  var target = (tless.match(RE.percent)||tless.match(RE.numUnit)||tless.match(RE.money)||[null])[0];
-
-  function slot(val, hint){
-    return val
-      ? '<span class="slot">' + escapeHtml(val) + '</span>'
-      : '<span class="slot empty">' + hint + '</span>';
-  }
-  return '在 ' + slot(dl,"期限,如:2026 年 Q4 底") + ' 前,透過 ' + slot(method,"主要方法/行動")
-    + ',將 ' + slot(metric,"衡量指標") + ' 由 ' + slot(null,"現況值") + ' 提升/降低至 '
-    + slot(target,"目標值") + ',以支持 ' + slot(null,"部門/公司的哪項重點") + '。';
-}
-
-/* ============ 畫面 ============ */
-
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, function(c){
-    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  /* marks */
+  pts.forEach(function(p){
+    var fill = quadFill(p.d.quad);
+    var gEl = el("g",{});
+    /* halo hit-target */
+    var halo = el("circle",{cx:p.cx, cy:p.cy, r:16, fill:"transparent"});
+    gEl.appendChild(halo);
+    gEl.appendChild(el("circle",{cx:p.cx, cy:p.cy, r:11, fill:"none", stroke:card, "stroke-width":4}));
+    gEl.appendChild(el("circle",{cx:p.cx, cy:p.cy, r:9, fill:fill, stroke:ink, "stroke-width":1,
+      "stroke-opacity":.35}));
+    var lbl = el("text",{x:p.lx, y:p.ly, "text-anchor":"middle", fill:ink,
+      "font-weight":"600", "font-size":"13", "paint-order":"stroke",
+      stroke:card, "stroke-width":3, "stroke-linejoin":"round"}, p.d.name);
+    gEl.appendChild(lbl);
+    gEl.style.cursor = "default";
+    gEl.addEventListener("mousemove", function(ev){ showTip(ev, p.d); });
+    gEl.addEventListener("mouseleave", hideTip);
+    svg.appendChild(gEl);
   });
+
+  chartBox.appendChild(svg);
 }
 
-function renderGoal(res, idx, showIndex){
-  var h = '<article class="result">';
-  h += '<div class="result-head">';
-  h += '<blockquote class="goal-quote"><span class="g-label">' + (showIndex ? "目標 " + (idx+1) : "檢核的目標") + '</span>' + escapeHtml(res.text) + '</blockquote>';
-  h += '<div class="overall"><span class="num">' + res.total + '<span class="denom"> / 100</span></span>';
-  h += '<span class="verdict pill ' + res.verdict.key + '">' + res.verdict.label + '</span></div>';
-  h += '</div>';
+function showTip(ev, d){
+  var q = QUAD[d.quad];
+  tooltip.innerHTML =
+    '<span class="tt-name"></span><br>'+
+    '職位重要性 <strong>'+d.x+'</strong> ・ 人才風險 <strong>'+d.y+'</strong><br>'+
+    '<span class="tt-quad"></span><br><span class="tt-act"></span>';
+  tooltip.querySelector(".tt-name").textContent = d.name;
+  var qEl = tooltip.querySelector(".tt-quad");
+  qEl.textContent = q.name + (q.risk!=="—" ? "("+q.risk+")" : "");
+  qEl.style.color = quadFill(d.quad);
+  tooltip.querySelector(".tt-act").textContent = q.action;
+  tooltip.style.display = "block";
+  var box = chartBox.getBoundingClientRect();
+  var tx = ev.clientX - box.left + 16, ty = ev.clientY - box.top + 16;
+  if(tx + tooltip.offsetWidth  > box.width)  tx -= tooltip.offsetWidth + 32;
+  if(ty + tooltip.offsetHeight > box.height) ty -= tooltip.offsetHeight + 32;
+  tooltip.style.left = tx+"px"; tooltip.style.top = ty+"px";
+}
+function hideTip(){ tooltip.style.display = "none"; }
 
-  h += '<ul class="dims">';
-  res.dims.forEach(function(d){
-    h += '<li class="dim"><span class="dim-badge" aria-hidden="true">' + d.key + '</span><div>';
-    h += '<div class="dim-top"><span class="dim-name">' + d.name + ' <small>' + d.en + '</small></span>';
-    h += '<span class="pill ' + d.level.key + '">' + d.level.label + '</span>';
-    h += '<span class="dim-score">' + d.score + ' / 100</span></div>';
-    h += '<div class="meter ' + d.level.key + '" role="img" aria-label="' + d.name + ' 得分 ' + d.score + ' 分,' + d.level.label + '"><i style="width:' + d.score + '%"></i></div>';
-    if(d.evidence.length){
-      h += '<div class="evidence">';
-      d.evidence.forEach(function(e){
-        h += '<span class="chip"><b>' + e.label + '</b>:' + escapeHtml(e.items.slice(0,4).join("、")) + '</span>';
-      });
-      h += '</div>';
-    }
-    h += '<ul class="tips">';
-    d.tips.forEach(function(t){ h += '<li>' + t + '</li>'; });
-    h += '</ul></div></li>';
+/* ---------- summary table ---------- */
+function renderSummary(items, dept){
+  var body = document.getElementById("summaryBody");
+  body.innerHTML = "";
+  var sorted = items.slice().sort(function(a,b){
+    var qa = QUAD[a.quad].order, qb = QUAD[b.quad].order;
+    if(qa!==qb) return qa-qb;
+    return (b.x+b.y)-(a.x+a.y);
   });
-  h += '</ul>';
-
-  h += '<div class="panel"><h3><span class="tag">改寫參考</span>建議句型 — 把偵測到的內容放進完整結構</h3>';
-  h += '<p class="rewrite-sentence">' + buildRewrite(res.text, res.dims) + '</p></div>';
-
-  var weak = res.dims.filter(function(d){ return d.level.key !== "good"; })
-                     .sort(function(a,b){ return a.score - b.score; })
-                     .slice(0,3);
-  if(!weak.length) weak = [res.dims[2], res.dims[3]]; /* A/R 永遠值得對話 */
-  h += '<div class="panel"><h3><span class="tag">績效面談</span>下次一對一,可以這樣提問</h3><ul class="coach-list">';
-  weak.forEach(function(d){ h += '<li>' + COACH[d.key] + '</li>'; });
-  h += '</ul></div>';
-
-  h += '</article>';
-  return h;
+  sorted.forEach(function(d,i){
+    var q = QUAD[d.quad];
+    var tr = document.createElement("tr");
+    var pill = '<span class="pill '+q.cls+'"></span>';
+    tr.innerHTML =
+      '<td class="score">'+(i+1)+'</td>'+
+      '<td class="pos-name"></td>'+
+      '<td class="score">'+d.x+'</td>'+
+      '<td class="score">'+d.y+'</td>'+
+      '<td>'+pill+'</td>'+
+      '<td class="action-cell"></td>';
+    tr.querySelector(".pos-name").textContent = d.name;
+    tr.querySelector(".pill").textContent = q.name + (q.risk!=="—" ? "・"+q.risk : "");
+    tr.querySelector(".action-cell").textContent = q.action;
+    body.appendChild(tr);
+  });
+  var counts = { red:0, yellow:0, green:0, gray:0 };
+  items.forEach(function(d){ counts[d.quad]++; });
+  document.getElementById("summarySub").textContent =
+    (dept ? dept+" ・ " : "") + "共 "+items.length+" 個職位:最危險區 "+counts.red+
+    "、可觀察 "+counts.yellow+"、穩定區 "+counts.green+"、一般區 "+counts.gray+
+    "。依「優先處理 → 例行管理」排序。";
 }
 
-function splitGoals(raw){
-  return raw.split(/\n+/)
-    .map(function(l){ return l.replace(/^\s*(\d+[\.\、\)]|[-•●*]|\([一二三四五六七八九十\d]+\)|[一二三四五六七八九十]+[、.])\s*/,"").trim(); })
-    .filter(function(l){ return l.length >= 6; })
-    .slice(0, 10);
-}
+/* ---------- actions ---------- */
+document.getElementById("drawBtn").addEventListener("click", function(){
+  var items = readData();
+  if(!items) return;
+  var dept = document.getElementById("deptName").value.trim();
+  document.getElementById("deptTag").textContent = dept ? "部門:"+dept : "";
+  drawChart(items, dept);
+  renderSummary(items, dept);
+  var result = document.getElementById("result");
+  result.style.display = "block";
+  result.scrollIntoView({ behavior:"smooth", block:"start" });
+});
 
-var input = document.getElementById("goal-input");
-var resultsEl = document.getElementById("results");
+document.getElementById("addRowBtn").addEventListener("click", function(){ addRow(); });
 
-function runCheck(){
-  var goals = splitGoals(input.value || "");
-  if(!goals.length){
-    resultsEl.innerHTML = '<div class="panel"><p style="margin:0">請先貼上至少一條目標(每條至少 6 個字),再按「檢核目標」。</p></div>';
-    return;
-  }
-  var html = goals.map(function(g,i){ return renderGoal(evaluateGoal(g), i, goals.length > 1); }).join("");
-  html += '<p class="no-print" style="text-align:right"><button class="btn ghost" id="btn-print">列印 / 存成 PDF</button></p>';
-  resultsEl.innerHTML = html;
-  var pb = document.getElementById("btn-print");
-  if(pb) pb.addEventListener("click", function(){ window.print(); });
-  resultsEl.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
-}
+document.getElementById("sampleBtn").addEventListener("click", function(){
+  document.getElementById("deptName").value = "HW Center";
+  rowsEl.innerHTML = "";
+  addRow("RF Architect", 23, 25);
+  addRow("HW1 Manager", 20, 6);
+  addRow("PM Lead", 12, 2);
+  addRow("Test Lead", 10, 18);
+  addRow("FW Engineer", 18, 16);
+  errEl.style.display = "none";
+});
 
-document.getElementById("btn-check").addEventListener("click", runCheck);
-document.getElementById("btn-clear").addEventListener("click", function(){
-  input.value = ""; resultsEl.innerHTML = ""; input.focus();
+document.getElementById("clearBtn").addEventListener("click", function(){
+  document.getElementById("deptName").value = "";
+  clearRows(3);
+  errEl.style.display = "none";
+  document.getElementById("result").style.display = "none";
 });
-document.getElementById("btn-demo-bad").addEventListener("click", function(){
-  input.value = "持續提升團隊的工作效率,並加強跨部門溝通。";
-  runCheck();
+
+document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+
+document.getElementById("pngBtn").addEventListener("click", function(){
+  var svg = chartBox.querySelector("svg");
+  if(!svg) return;
+  var clone = svg.cloneNode(true);
+  clone.setAttribute("width", W*2); clone.setAttribute("height", H*2);
+  var xml = new XMLSerializer().serializeToString(clone);
+  var img = new Image();
+  img.onload = function(){
+    var cv = document.createElement("canvas");
+    cv.width = W*2; cv.height = H*2;
+    var ctx = cv.getContext("2d");
+    ctx.fillStyle = cssColor("--card");
+    ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.drawImage(img,0,0,cv.width,cv.height);
+    var a = document.createElement("a");
+    var dept = document.getElementById("deptName").value.trim();
+    a.download = (dept ? dept+"-" : "")+"人才風險地圖.png";
+    a.href = cv.toDataURL("image/png");
+    a.click();
+  };
+  img.src = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(xml);
 });
-document.getElementById("btn-demo-good").addEventListener("click", function(){
-  input.value = "在 2026 年 Q4 底前,透過導入自動化檢測與每週瓶頸盤點,將產線 A 直通率由 91% 提升至 96%,以支持廠區年度良率目標。";
-  runCheck();
-});
-input.addEventListener("keydown", function(e){
-  if((e.ctrlKey || e.metaKey) && e.key === "Enter") runCheck();
-});
+
+/* ---------- init ---------- */
+clearRows(3);
 })();
 </script>
 </body>
