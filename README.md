@@ -35,12 +35,9 @@
 
 ## 公開網址
 
-**<https://chuyc347-cmyk.github.io/AUO/talent-risk-map/>**
+本工具已搬到獨立的儲存庫 `chuyc347-cmyk/talent-risk-map`,之後的更新都在那裡進行:
 
-推送本分支時,`.github/workflows/deploy-talent-risk-map.yml` 會把 `index.html`
-複製到 `gh-pages` 分支的 `talent-risk-map/` 子目錄,不會動到同站的其他工具。
-
-把這個網址(或 QR code)放在課程簡報最後一頁,學員即可直接使用。
+**<https://chuyc347-cmyk.github.io/talent-risk-map/>**
 
 ## 本機預覽
 
