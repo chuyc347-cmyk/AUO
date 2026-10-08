@@ -33,14 +33,14 @@
 單一 `index.html`,純 HTML/CSS/JavaScript(SVG 繪圖),無任何後端、外部套件或 API。
 象限規則與建議行動文字集中在 `index.html` 內的 `QUAD` 設定表,可直接修改。
 
-## 公開部署(GitHub Pages)
+## 公開網址
 
-1. 將本分支合併到 `main`(或直接以本分支部署)
-2. GitHub repo → **Settings → Pages**
-3. Source 選 **Deploy from a branch**,Branch 選 `main`、資料夾選 `/ (root)`,按 Save
-4. 約一分鐘後網站會發佈在 `https://<帳號>.github.io/<repo 名稱>/`
+**<https://chuyc347-cmyk.github.io/AUO/talent-risk-map/>**
 
-之後只要把這個網址(或 QR code)放在課程簡報最後一頁,學員即可直接使用。
+推送本分支時,`.github/workflows/deploy-talent-risk-map.yml` 會把 `index.html`
+複製到 `gh-pages` 分支的 `talent-risk-map/` 子目錄,不會動到同站的其他工具。
+
+把這個網址(或 QR code)放在課程簡報最後一頁,學員即可直接使用。
 
 ## 本機預覽
 
